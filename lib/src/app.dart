@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'features/menu/view/menu_screen.dart';
+import 'theme/theme.dart';
 
 class CoffeeShopApp extends StatelessWidget {
   const CoffeeShopApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: coffeeAppTheme,
+      home: const SafeArea(
+        child: MenuScreen()
+      )
     );
   }
 }

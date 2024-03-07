@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'app_colors.dart';
+
 final coffeeAppTheme = ThemeData(
   fontFamily: 'Roboto',
+  primaryColor: CoffeeAppColors.primary,
   colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color(0xFF85C3DE),
-    background: const Color(0xFFF7FAF8),
-    surface: const Color(0xFFF7FAF8),
+    seedColor: CoffeeAppColors.primary,
+    background: CoffeeAppColors.screenBackground,
+    surface: CoffeeAppColors.screenBackground,
   ),
   textTheme: const TextTheme(
     titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
