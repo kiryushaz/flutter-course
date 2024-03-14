@@ -4,8 +4,9 @@ import 'package:flutter_course/src/theme/app_colors.dart';
 class CategoryButton extends StatefulWidget {
   final String text;
   final bool isActive;
+  final Function()? onPressed;
 
-  const CategoryButton({super.key, required this.text, required this.isActive});
+  const CategoryButton({super.key, required this.text, required this.isActive, this.onPressed});
 
   @override
   _CategoryButtonState createState() => _CategoryButtonState();
@@ -25,7 +26,7 @@ class _CategoryButtonState extends State<CategoryButton> {
             minimumSize: Size.zero,
             textStyle: Theme.of(context).textTheme.bodyMedium,
             padding: const EdgeInsets.all(8.0)),
-        onPressed: () {},
+        onPressed: widget.onPressed,
         child: Text(widget.text));
   }
 }

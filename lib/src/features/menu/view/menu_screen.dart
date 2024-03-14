@@ -12,23 +12,42 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   int _selectedIndex = 0;
 
+  void selectCategory(index) {
+    setState(() {
+      if (index != _selectedIndex) {
+        _selectedIndex = index;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-      children: [
-        SizedBox(
-          height: 36.0,
-          child: ListView.separated(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            itemBuilder: (context, index) => CategoryButton(
-                text: categories[index].name,
-                isActive: index == _selectedIndex),
-            separatorBuilder: (context, index) => const SizedBox(width: 8.0),
+        body: CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 68.0,
+            child: ListView.separated(
+              padding: const EdgeInsets.all(16.0),
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              itemBuilder: (context, index) => CategoryButton(
+                  text: categories[index].name,
+                  isActive: index == _selectedIndex,
+                  onPressed: () => selectCategory(index)),
+              separatorBuilder: (context, index) => const SizedBox(width: 8.0),
+            ),
           ),
-        )
+        ),
+        // Expanded(
+        //   child: ListView.builder(
+        //     itemCount: categories.length,
+        //     itemBuilder: (context, index) {
+        //       return Text(categories[index].name, style: Theme.of(context).textTheme.titleLarge);
+        //     },
+        //   )
+        // )
       ],
     ));
   }
