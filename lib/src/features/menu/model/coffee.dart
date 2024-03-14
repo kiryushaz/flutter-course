@@ -2,10 +2,9 @@ import 'category.dart';
 
 class Coffee {
   final String name;
-  final String description;
-  final Category category;
-  final double price;
+  final int price;
   final String? image;
+  final Category category;
 
-  Coffee(this.name, this.description, this.category, this.price, this.image);
+  Coffee({required this.name, required this.price, this.image, required this.category});
 }
