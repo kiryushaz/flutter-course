@@ -15,6 +15,19 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   int _selectedIndex = 0;
 
+  void scrollTo(index) {
+    setState(() {
+      final targetContext = categories[index].key.currentContext;
+      if (targetContext != null) {
+        Scrollable.ensureVisible(
+          targetContext,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease
+        );
+      }
+    });
+  }
+
   void selectCategory(index) {
     setState(() {
       if (index != _selectedIndex) {
@@ -31,16 +44,21 @@ class _MenuScreenState extends State<MenuScreen> {
             SliverAppBar(
               pinned: true,
               elevation: 0,
+              shadowColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
               flexibleSpace: SizedBox(
-                height: 36,
+                height: 52,
                 child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
                   itemBuilder: (context, index) => CategoryButton(
                       text: categories[index].name,
                       isActive: index == _selectedIndex,
-                      onPressed: () => selectCategory(index)),
+                      onPressed: () {
+                        selectCategory(index);
+                        scrollTo(index);
+                      }),
                   separatorBuilder: (context, index) =>
                       const SizedBox(width: 8.0),
                 ),
@@ -56,6 +74,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   SliverPadding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     sliver: SliverToBoxAdapter(
+                      key: category.key,
                       child: Text(category.name,
                           style: Theme.of(context).textTheme.titleLarge),
                     ),
@@ -65,11 +84,10 @@ class _MenuScreenState extends State<MenuScreen> {
                     sliver: SliverGrid(
                         gridDelegate:
                             const SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 250.0,
+                          maxCrossAxisExtent: 320,
                           mainAxisExtent: 196,
-                          mainAxisSpacing: 10.0,
-                          crossAxisSpacing: 10.0,
-                          childAspectRatio: 1.0,
+                          mainAxisSpacing: 16.0,
+                          crossAxisSpacing: 16.0,
                         ),
                         delegate: SliverChildBuilderDelegate((context, index) {
                           return Coffeecard(coffee: coffeeCat[index]);
