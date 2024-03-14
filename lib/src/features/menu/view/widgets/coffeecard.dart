@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_course/src/theme/app_colors.dart';
-import '../../data/coffee_data.dart';
 import '../../model/coffee.dart';
 
 class Coffeecard extends StatefulWidget {
@@ -29,7 +28,7 @@ class _CoffeecardState extends State<Coffeecard> {
             });
           },
           child: const Text("-")),
-      const SizedBox(width: 8),
+      const SizedBox(width: 4),
       ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor: CoffeeAppColors.primary,
@@ -39,7 +38,7 @@ class _CoffeecardState extends State<Coffeecard> {
               padding: const EdgeInsets.symmetric(vertical: 4.0)),
           onPressed: () {},
           child: Text("$_count")),
-      const SizedBox(width: 8),
+      const SizedBox(width: 4),
       ElevatedButton(
           style: ElevatedButton.styleFrom(
               backgroundColor: CoffeeAppColors.primary,
@@ -62,6 +61,7 @@ class _CoffeecardState extends State<Coffeecard> {
             backgroundColor: CoffeeAppColors.primary,
             foregroundColor: CoffeeAppColors.secondaryTextColor,
             minimumSize: const Size(116, 32),
+            elevation: 0,
             textStyle: Theme.of(context).textTheme.bodySmall,
             padding: const EdgeInsets.symmetric(vertical: 4.0)),
         onPressed: () {
@@ -76,16 +76,17 @@ class _CoffeecardState extends State<Coffeecard> {
   Widget build(BuildContext context) {
     return Container(
       width: 180,
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: ShapeDecoration(
           color: CoffeeAppColors.cardBackground,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       child: Column(children: [
-        Image.asset(widget.coffee.image ?? 'images/nopicture.png', height: 100),
+        Image.asset(widget.coffee.image ?? 'assets/images/nopicture.png', height: 100),
         Container(
-            margin: const EdgeInsets.symmetric(vertical: 8.0),
+            margin: const EdgeInsets.only(top: 8.0),
             child: Text(widget.coffee.name,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500,
