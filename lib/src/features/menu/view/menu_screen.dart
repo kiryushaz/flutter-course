@@ -13,17 +13,23 @@ class MenuScreen extends StatefulWidget {
 }
 
 class _MenuScreenState extends State<MenuScreen> {
+  final _scrollController = ScrollController();
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    _scrollController.addListener(() {
+      print(_scrollController.offset);
+    });
+    super.initState();
+  }
 
   void scrollTo(index) {
     setState(() {
       final targetContext = categories[index].key.currentContext;
       if (targetContext != null) {
-        Scrollable.ensureVisible(
-          targetContext,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.ease
-        );
+        Scrollable.ensureVisible(targetContext,
+            duration: const Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
   }
@@ -40,6 +46,7 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: CustomScrollView(
+      controller: _scrollController,
       slivers: <Widget>[
             SliverAppBar(
               pinned: true,
@@ -49,7 +56,9 @@ class _MenuScreenState extends State<MenuScreen> {
               flexibleSpace: SizedBox(
                 height: 52,
                 child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 16.0),
                   scrollDirection: Axis.horizontal,
                   itemCount: categories.length,
                   itemBuilder: (context, index) => CategoryButton(
@@ -85,14 +94,13 @@ class _MenuScreenState extends State<MenuScreen> {
                         gridDelegate:
                             const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 320,
-                          mainAxisExtent: 196,
+                          mainAxisExtent: 216,
                           mainAxisSpacing: 16.0,
                           crossAxisSpacing: 16.0,
                         ),
                         delegate: SliverChildBuilderDelegate((context, index) {
                           return Coffeecard(coffee: coffeeCat[index]);
-                        }, childCount: coffeeCat.length)
-                    ),
+                        }, childCount: coffeeCat.length)),
                   ),
                 ];
               })
