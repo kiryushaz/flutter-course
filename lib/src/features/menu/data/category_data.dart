@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
 
-List<Category> categories = [
-  Category(GlobalKey(), "Черный кофе"),
-  Category(GlobalKey(), "Кофе с молоком"),
-  Category(GlobalKey(), "Чай"),
-  Category(GlobalKey(), "Авторские напитки"),
+List<Map<String, dynamic>> categories = [
+  {"key": GlobalKey(), "data": const Category("Черный кофе")},
+  {"key": GlobalKey(), "data": const Category("Кофе с молоком")},
+  {"key": GlobalKey(), "data": const Category("Чай")},
+  {"key": GlobalKey(), "data": const Category("Авторские напитки")},
 ];
