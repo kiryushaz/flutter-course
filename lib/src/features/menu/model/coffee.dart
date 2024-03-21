@@ -6,5 +6,5 @@ class Coffee {
   final String? image;
   final Category category;
 
-  Coffee({required this.name, required this.price, this.image, required this.category});
+  const Coffee({required this.name, required this.price, this.image, required this.category});
 }
