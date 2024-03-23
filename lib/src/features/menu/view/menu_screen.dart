@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/category_button.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/coffeecard.dart';
 import '../data/category_data.dart';
@@ -19,15 +18,13 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   void initState() {
-    _scrollController.addListener(() {
-      // print(_scrollController.offset);
-    });
+    _scrollController.addListener(() {});
     super.initState();
   }
 
-  void scrollTo(index) {
+  void scrollTo(category) {
     setState(() {
-      final targetContext = categories[index]['key'].currentContext;
+      final targetContext = GlobalObjectKey(category).currentContext;
       if (targetContext != null) {
         Scrollable.ensureVisible(targetContext,
             duration: const Duration(milliseconds: 500), curve: Curves.ease);
@@ -62,12 +59,12 @@ class _MenuScreenState extends State<MenuScreen> {
             itemBuilder: (context, index) {
               final category = categories[index];
               return CategoryButton(
-                text: category['data'].name,
-                isActive: index == _selectedIndex,
-                onPressed: () {
-                  selectCategory(index);
-                  scrollTo(index);
-                });
+                  text: category.name,
+                  isActive: index == _selectedIndex,
+                  onPressed: () {
+                    selectCategory(index);
+                    scrollTo(category.name);
+                  });
             },
             separatorBuilder: (context, index) => const SizedBox(width: 8.0),
           ),
@@ -80,13 +77,13 @@ class _MenuScreenState extends State<MenuScreen> {
           itemBuilder: (context, index) {
             final category = categories[index];
             List<Coffee> coffeeCat =
-                coffee.where((t) => t.category == category['data']).toList();
+                coffee.where((t) => t.category == category).toList();
             return CustomScrollView(shrinkWrap: true, slivers: [
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 sliver: SliverToBoxAdapter(
-                  key: category['key'],
-                  child: Text(category['data'].name,
+                  key: GlobalObjectKey(category.name),
+                  child: Text(category.name,
                       style: Theme.of(context).textTheme.titleLarge),
                 ),
               ),
