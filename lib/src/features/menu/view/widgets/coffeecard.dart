@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course/src/features/menu/model/product.dart';
 import 'package:flutter_course/src/theme/app_colors.dart';
-import '../../model/coffee.dart';
 
 class Coffeecard extends StatefulWidget {
-  final Coffee coffee;
+  final Product coffee;
   const Coffeecard({super.key, required this.coffee});
 
   @override
@@ -69,7 +69,8 @@ class _CoffeecardState extends State<Coffeecard> {
             _count++;
           });
         },
-        child: Text("${widget.coffee.price} руб"));
+        child: Text(
+            '${widget.coffee.prices[0].value} ${widget.coffee.prices[0].currency}'));
   }
 
   @override
@@ -82,7 +83,9 @@ class _CoffeecardState extends State<Coffeecard> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       child: Column(children: [
-        Image.asset(widget.coffee.image ?? 'assets/images/nopicture.png', height: 100),
+        widget.coffee.imageUrl != ''
+            ? Image.network(widget.coffee.imageUrl, height: 100)
+            : Image.asset('assets/images/nopicture.png'),
         Container(
             margin: const EdgeInsets.only(top: 8.0),
             child: Text(widget.coffee.name,
