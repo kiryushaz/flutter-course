@@ -17,6 +17,9 @@ class Product {
       required this.imageUrl,
       required this.category});
 
+  @override
+  String toString() => name;
+
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         id: json["id"],
         name: json["name"],

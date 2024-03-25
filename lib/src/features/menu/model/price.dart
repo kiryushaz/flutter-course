@@ -4,6 +4,9 @@ class Price {
 
   Price({required this.value, required this.currency});
 
+  @override
+  String toString() => '$value $currency';
+
   factory Price.fromJson(Map<String, dynamic> json) => Price(
         value: json["value"],
         currency: json["currency"],
