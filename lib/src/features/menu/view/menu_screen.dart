@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
+import 'package:flutter_course/src/features/menu/model/product.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/cart_button.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/category_button.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/order_bottom_sheet.dart';
@@ -17,7 +18,7 @@ class MenuScreen extends StatefulWidget {
 class _MenuScreenState extends State<MenuScreen> {
   final _scrollController = ScrollController();
   final menuBloc = MenuBloc();
-  Map<String, int> cart = {};
+  List<Product> cart = [];
   int _selectedIndex = 1;
 
   @override
@@ -60,11 +61,11 @@ class _MenuScreenState extends State<MenuScreen> {
                       showModalBottomSheet(
                           context: context,
                           builder: (context) {
-                            return OrderBottomSheet(cart: cart);
+                            return OrderBottomSheet(bloc: menuBloc, cart: cart);
                           });
                     }),
                 body: CustomScrollView(
-                    controller: _scrollController,
+                    controller: ScrollController(),
                     slivers: <Widget>[
                       SliverAppBar(
                         pinned: true,
@@ -73,7 +74,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         surfaceTintColor: Colors.transparent,
                         flexibleSpace: SizedBox(
                           child: ListView.separated(
-                            controller: _scrollController,
+                            controller: ScrollController(),
                             shrinkWrap: true,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 16.0),
@@ -96,7 +97,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       ),
                       SliverToBoxAdapter(
                         child: ListView.builder(
-                          controller: _scrollController,
+                          controller: ScrollController(),
                           shrinkWrap: true,
                           itemCount: state.categories!.length,
                           itemBuilder: (context, index) {
@@ -108,7 +109,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                   .toList();
                               if (coffee.isEmpty) return Container();
                               return CustomScrollView(
-                                controller: _scrollController,
+                                controller: ScrollController(),
                                   shrinkWrap: true,
                                   slivers: [
                                     SliverPadding(
@@ -135,7 +136,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                           delegate: SliverChildBuilderDelegate(
                                               (context, index) {
                                             return Coffeecard(
-                                                cart: cart,
+                                                cart: cart, bloc: menuBloc,
                                                 coffee: coffee[index]);
                                           }, childCount: coffee.length)),
                                     ),

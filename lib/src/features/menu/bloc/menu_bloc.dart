@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_course/src/features/menu/data/category_repo.dart';
 import 'package:flutter_course/src/features/menu/data/product_repo.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
@@ -34,8 +35,17 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
             emit(MenuFailureState(exception: e));
           }
           break;
+        case AddItemToCartEvent():
+          debugPrint("Added item to cart");
+          break;
+        case RemoveItemFromCartEvent():
+          debugPrint("Remove item from cart");
+          break;
+        case CreateNewOrderEvent():
+          debugPrint("Create new order");
+          break;
         default:
-          
+          break;
       }
     });
   }

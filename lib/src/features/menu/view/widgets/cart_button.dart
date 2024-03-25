@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course/src/features/menu/model/product.dart';
 
 class CartButton extends StatelessWidget {
-  final Map<String, int> cart;
+  final List<Product> cart;
   
   const CartButton({
     super.key, required this.cart,

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
+import 'package:flutter_course/src/features/menu/model/product.dart';
 
 class OrderBottomSheet extends StatefulWidget {
-  final Map<String, int> cart;
-  
-  const OrderBottomSheet({super.key, required this.cart});
+  final List<Product> cart;
+  final MenuBloc bloc;
+
+  const OrderBottomSheet({super.key, required this.cart, required this.bloc});
 
   @override
   _OrderBottomSheetState createState() => _OrderBottomSheetState();
@@ -41,11 +44,16 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                           Image.asset('assets/images/coffee.png', height: 55.0),
                       title: Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text("Олеато",
+                        child: Text(widget.cart[index].name,
                             style: Theme.of(context).textTheme.titleMedium),
                       ),
-                      trailing: const Text("139 RUB",
-                          style: TextStyle(
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(widget.cart[index].description,
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ),
+                      trailing: Text(widget.cart[index].prices[0].toString(),
+                          style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)));
                 },
                 separatorBuilder: (context, index) =>
@@ -59,6 +67,8 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)))),
                   onPressed: () {
+                    debugPrint(createOrder(widget.cart).toString());
+                    widget.bloc.add(const CreateNewOrderEvent());
                     Navigator.of(context).pop();
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Заказ создан"),
@@ -79,5 +89,20 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
         ),
       ),
     );
+  }
+
+  Map<String, int> createOrder(List<Product> cart) {
+    Map<String, int> orderJson = {};
+
+    for (var element in cart) {
+      final product = element.id.toString();
+      if (!orderJson.containsKey(product)) {
+        orderJson[product] = 1;
+      } else {
+        orderJson.update(product, (value) => value + 1);
+      }
+    }
+
+    return orderJson;
   }
 }

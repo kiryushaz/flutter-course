@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
 import 'package:flutter_course/src/features/menu/model/product.dart';
 import 'package:flutter_course/src/theme/app_colors.dart';
 
 class Coffeecard extends StatefulWidget {
   final Product coffee;
-  final Map<String, int> cart;
-  const Coffeecard({super.key, required this.coffee, required this.cart});
+  final MenuBloc bloc;
+  final List<Product> cart;
+  const Coffeecard({super.key, required this.bloc, required this.coffee, required this.cart});
 
   @override
   _CoffeecardState createState() => _CoffeecardState();
@@ -14,32 +16,31 @@ class Coffeecard extends StatefulWidget {
 class _CoffeecardState extends State<Coffeecard> {
   int _count = 0;
 
-  List<Widget> changeCountPurchasedItems() {
-    return [
-      ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              minimumSize: const Size(32, 32),
-              textStyle: Theme.of(context).textTheme.bodySmall,
-              padding: const EdgeInsets.symmetric(vertical: 4.0)),
-          onPressed: () {
-            setState(() {
-              _count--;
-              if (_count > 0) {
-                widget.cart[widget.coffee.id.toString()] = _count;
-              } else {
-                widget.cart.remove(widget.coffee.id.toString());
-              }
-            });
-          },
-          child: const Text("-")),
-      const SizedBox(width: 4),
+  Widget changeCountPurchasedItems() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(32, 32),
+                  textStyle: Theme.of(context).textTheme.bodySmall,
+                  padding: const EdgeInsets.symmetric(vertical: 4.0)),
+              onPressed: () {
+                widget.bloc.add(const RemoveItemFromCartEvent());
+                setState(() {
+                  _count--;
+                  widget.cart.remove(widget.coffee);
+                });
+              },
+              child: const Text("-")),
+          const SizedBox(width: 4),
       ElevatedButton(
           style: ElevatedButton.styleFrom(
               minimumSize: const Size(52, 32),
               textStyle: Theme.of(context).textTheme.bodySmall,
               padding: const EdgeInsets.symmetric(vertical: 4.0)),
           onPressed: () {
-            print(widget.cart);
+            debugPrint(widget.cart.toString());
           },
           child: Text("$_count")),
       const SizedBox(width: 4),
@@ -49,15 +50,17 @@ class _CoffeecardState extends State<Coffeecard> {
               textStyle: Theme.of(context).textTheme.bodySmall,
               padding: const EdgeInsets.symmetric(vertical: 4.0)),
           onPressed: () {
+            widget.bloc.add(const AddItemToCartEvent());
             setState(() {
               if (_count < 10) {
                 _count++;
-                widget.cart[widget.coffee.id.toString()] = _count;
+                widget.cart.add(widget.coffee);
               }
             });
           },
           child: const Text("+")),
-    ];
+        ],
+      );
   }
 
   Widget showPurchaseButton() {
@@ -68,13 +71,13 @@ class _CoffeecardState extends State<Coffeecard> {
             textStyle: Theme.of(context).textTheme.bodySmall,
             padding: const EdgeInsets.symmetric(vertical: 4.0)),
         onPressed: () {
+          widget.bloc.add(const AddItemToCartEvent());
           setState(() {
             _count++;
-            widget.cart[widget.coffee.id.toString()] = _count;
+            widget.cart.add(widget.coffee);
           });
         },
-        child: Text(
-            '${widget.coffee.prices[0].value} ${widget.coffee.prices[0].currency}'));
+        child: Text(widget.coffee.prices[0].toString()));
   }
 
   @override
@@ -98,12 +101,7 @@ class _CoffeecardState extends State<Coffeecard> {
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500,
                     fontSize: 16))),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          if (_count > 0)
-            ...[changeCountPurchasedItems()].expand((element) => element)
-          else
-            showPurchaseButton()
-        ])
+        _count > 0 ? changeCountPurchasedItems() : showPurchaseButton()
       ]),
     );
   }
