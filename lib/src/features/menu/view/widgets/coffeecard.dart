@@ -4,7 +4,8 @@ import 'package:flutter_course/src/theme/app_colors.dart';
 
 class Coffeecard extends StatefulWidget {
   final Product coffee;
-  const Coffeecard({super.key, required this.coffee});
+  final Map<String, int> cart;
+  const Coffeecard({super.key, required this.coffee, required this.cart});
 
   @override
   _CoffeecardState createState() => _CoffeecardState();
@@ -17,38 +18,42 @@ class _CoffeecardState extends State<Coffeecard> {
     return [
       ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: CoffeeAppColors.primary,
-              foregroundColor: CoffeeAppColors.secondaryTextColor,
               minimumSize: const Size(32, 32),
               textStyle: Theme.of(context).textTheme.bodySmall,
               padding: const EdgeInsets.symmetric(vertical: 4.0)),
           onPressed: () {
             setState(() {
               _count--;
+              if (_count > 0) {
+                widget.cart[widget.coffee.id.toString()] = _count;
+              } else {
+                widget.cart.remove(widget.coffee.id.toString());
+              }
             });
           },
           child: const Text("-")),
       const SizedBox(width: 4),
       ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: CoffeeAppColors.primary,
-              foregroundColor: CoffeeAppColors.secondaryTextColor,
               minimumSize: const Size(52, 32),
               textStyle: Theme.of(context).textTheme.bodySmall,
               padding: const EdgeInsets.symmetric(vertical: 4.0)),
-          onPressed: () {},
+          onPressed: () {
+            print(widget.cart);
+          },
           child: Text("$_count")),
       const SizedBox(width: 4),
       ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: CoffeeAppColors.primary,
-              foregroundColor: CoffeeAppColors.secondaryTextColor,
               minimumSize: const Size(32, 32),
               textStyle: Theme.of(context).textTheme.bodySmall,
               padding: const EdgeInsets.symmetric(vertical: 4.0)),
           onPressed: () {
             setState(() {
-              if (_count < 10) _count++;
+              if (_count < 10) {
+                _count++;
+                widget.cart[widget.coffee.id.toString()] = _count;
+              }
             });
           },
           child: const Text("+")),
@@ -58,8 +63,6 @@ class _CoffeecardState extends State<Coffeecard> {
   Widget showPurchaseButton() {
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
-            backgroundColor: CoffeeAppColors.primary,
-            foregroundColor: CoffeeAppColors.secondaryTextColor,
             minimumSize: const Size(116, 32),
             elevation: 0,
             textStyle: Theme.of(context).textTheme.bodySmall,
@@ -67,6 +70,7 @@ class _CoffeecardState extends State<Coffeecard> {
         onPressed: () {
           setState(() {
             _count++;
+            widget.cart[widget.coffee.id.toString()] = _count;
           });
         },
         child: Text(
