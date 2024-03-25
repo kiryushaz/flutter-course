@@ -73,6 +73,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         surfaceTintColor: Colors.transparent,
                         flexibleSpace: SizedBox(
                           child: ListView.separated(
+                            controller: _scrollController,
                             shrinkWrap: true,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 16.0),
@@ -95,6 +96,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       ),
                       SliverToBoxAdapter(
                         child: ListView.builder(
+                          controller: _scrollController,
                           shrinkWrap: true,
                           itemCount: state.categories!.length,
                           itemBuilder: (context, index) {
@@ -106,6 +108,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                   .toList();
                               if (coffee.isEmpty) return Container();
                               return CustomScrollView(
+                                controller: _scrollController,
                                   shrinkWrap: true,
                                   slivers: [
                                     SliverPadding(
@@ -144,7 +147,7 @@ class _MenuScreenState extends State<MenuScreen> {
                       )
                     ]));
           } else if (state is MenuFailureState) {
-            return Center(child: Text(state.exception.toString()));
+            return Scaffold(body: Center(child: Text(state.exception.toString())));
           }
 
           return const Center(child: CircularProgressIndicator());
