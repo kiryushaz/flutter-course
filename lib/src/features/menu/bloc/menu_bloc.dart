@@ -48,6 +48,10 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
           emit(MenuSuccessState(categories: state.categories, items: state.items, cartItems: cart));
           debugPrint("Remove item from cart");
           break;
+        case ClearCartEvent():
+          emit(MenuSuccessState(categories: state.categories, items: state.items, cartItems: const []));
+          debugPrint("Cart cleared");
+          break;
         case CreateNewOrderEvent():
           final result = await createOrder(event.orderJson);
           debugPrint('$result');

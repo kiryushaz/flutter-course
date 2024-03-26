@@ -20,15 +20,20 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
         padding: const EdgeInsets.only(top: 24.0, left: 10.0, right: 10.0),
         child: ListView(
           children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.all(10.0),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Ваш заказ",
+                    const Text("Ваш заказ",
                         style: TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold)),
-                    Icon(Icons.recycling_outlined)
+                    IconButton(
+                        onPressed: () {
+                          widget.bloc.add(const ClearCartEvent());
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.delete))
                   ]),
             ),
             const Divider(),
@@ -78,6 +83,7 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Заказ создан"),
                         duration: Duration(seconds: 2)));
+                    widget.bloc.add(const ClearCartEvent());
                   },
                   child: const SizedBox(
                       width: double.infinity,

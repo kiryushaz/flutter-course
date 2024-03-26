@@ -36,6 +36,13 @@ final class RemoveItemFromCartEvent extends MenuEvent {
   List<Object?> get props => [item];
 }
 
+final class ClearCartEvent extends MenuEvent {
+  const ClearCartEvent();
+
+  @override
+  List<Object?> get props => [];
+}
+
 final class CreateNewOrderEvent extends MenuEvent {
   final Map<String, int> orderJson;
 
