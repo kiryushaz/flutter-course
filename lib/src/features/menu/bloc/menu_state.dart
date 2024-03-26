@@ -3,29 +3,30 @@ part of 'menu_bloc.dart';
 sealed class MenuState extends Equatable {
   final List<Category>? categories;
   final List<Product>? items;
+  final List<Product>? cartItems;
 
-  const MenuState({this.categories, this.items});
+  const MenuState({this.categories, this.items, this.cartItems});
 }
 
 final class MenuInitialState extends MenuState {
-  const MenuInitialState({super.categories, super.items});
+  const MenuInitialState();
   
   @override
-  List<Object?> get props => [super.categories, super.items];
+  List<Object?> get props => [];
 }
 
 final class MenuLoadingState extends MenuState {
-  const MenuLoadingState({super.categories, super.items});
+  const MenuLoadingState();
   
   @override
-  List<Object?> get props => [super.categories, super.items];
+  List<Object?> get props => [];
 }
 
 final class MenuSuccessState extends MenuState {
-  const MenuSuccessState({super.categories, super.items});
+  const MenuSuccessState({super.categories, super.items, super.cartItems});
   
   @override
-  List<Object?> get props => [super.categories, super.items];
+  List<Object?> get props => [super.categories, super.items, super.cartItems];
 }
 
 final class MenuFailureState extends MenuState {

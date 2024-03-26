@@ -136,7 +136,7 @@ class _MenuScreenState extends State<MenuScreen> {
                                           delegate: SliverChildBuilderDelegate(
                                               (context, index) {
                                             return Coffeecard(
-                                                cart: cart, bloc: menuBloc,
+                                                bloc: menuBloc,
                                                 coffee: coffee[index]);
                                           }, childCount: coffee.length)),
                                     ),

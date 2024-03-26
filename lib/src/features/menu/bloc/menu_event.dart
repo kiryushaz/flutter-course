@@ -19,22 +19,28 @@ final class LoadItemsEvent extends MenuEvent {
 }
 
 final class AddItemToCartEvent extends MenuEvent {
-  const AddItemToCartEvent();
+  final Product item;
+
+  const AddItemToCartEvent(this.item);
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [item];
 }
 
 final class RemoveItemFromCartEvent extends MenuEvent {
-  const RemoveItemFromCartEvent();
+  final Product item;
+
+  const RemoveItemFromCartEvent(this.item);
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [item];
 }
 
 final class CreateNewOrderEvent extends MenuEvent {
-  const CreateNewOrderEvent();
+  final Map<String, int> orderJson;
+
+  const CreateNewOrderEvent(this.orderJson);
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [orderJson];
 }

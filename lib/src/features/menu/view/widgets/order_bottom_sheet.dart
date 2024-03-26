@@ -18,8 +18,7 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
     return Center(
       child: Padding(
         padding: const EdgeInsets.only(top: 24.0, left: 10.0, right: 10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: ListView(
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.all(10.0),
@@ -40,26 +39,31 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                 itemBuilder: (context, index) {
                   return ListTile(
                       contentPadding: const EdgeInsets.all(10.0),
-                      leading:
-                          Image.asset('assets/images/coffee.png', height: 55.0),
+                      leading: Image.network(
+                          widget.bloc.state.cartItems![index].imageUrl,
+                          width: 55.0,
+                          height: 55.0,
+                          fit: BoxFit.contain),
                       title: Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(widget.cart[index].name,
+                        child: Text(widget.bloc.state.cartItems![index].name,
                             style: Theme.of(context).textTheme.titleMedium),
                       ),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(left: 10.0),
-                        child: Text(widget.cart[index].description,
+                        child: Text(
+                            widget.bloc.state.cartItems![index].description,
                             style: Theme.of(context).textTheme.bodySmall),
                       ),
-                      trailing: Text(widget.cart[index].prices[0].toString(),
+                      trailing: Text(
+                          widget.bloc.state.cartItems![index].prices[0]
+                              .toString(),
                           style: const TextStyle(
                               fontSize: 16, fontWeight: FontWeight.bold)));
                 },
                 separatorBuilder: (context, index) =>
                     const SizedBox(height: 10),
-                itemCount: widget.cart.length),
-            Expanded(child: Container()),
+                itemCount: widget.bloc.state.cartItems!.length),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: ElevatedButton(
@@ -67,8 +71,9 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                       shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(16)))),
                   onPressed: () {
-                    debugPrint(createOrder(widget.cart).toString());
-                    widget.bloc.add(const CreateNewOrderEvent());
+                    final orderJson = createOrder(widget.bloc.state.cartItems!);
+                    debugPrint('$orderJson');
+                    widget.bloc.add(CreateNewOrderEvent(orderJson));
                     Navigator.of(context).pop();
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Заказ создан"),

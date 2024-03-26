@@ -6,8 +6,8 @@ import 'package:flutter_course/src/theme/app_colors.dart';
 class Coffeecard extends StatefulWidget {
   final Product coffee;
   final MenuBloc bloc;
-  final List<Product> cart;
-  const Coffeecard({super.key, required this.bloc, required this.coffee, required this.cart});
+  // final List<Product> cart;
+  const Coffeecard({super.key, required this.bloc, required this.coffee});
 
   @override
   _CoffeecardState createState() => _CoffeecardState();
@@ -26,10 +26,9 @@ class _CoffeecardState extends State<Coffeecard> {
                   textStyle: Theme.of(context).textTheme.bodySmall,
                   padding: const EdgeInsets.symmetric(vertical: 4.0)),
               onPressed: () {
-                widget.bloc.add(const RemoveItemFromCartEvent());
+                widget.bloc.add(RemoveItemFromCartEvent(widget.coffee));
                 setState(() {
                   _count--;
-                  widget.cart.remove(widget.coffee);
                 });
               },
               child: const Text("-")),
@@ -40,7 +39,7 @@ class _CoffeecardState extends State<Coffeecard> {
               textStyle: Theme.of(context).textTheme.bodySmall,
               padding: const EdgeInsets.symmetric(vertical: 4.0)),
           onPressed: () {
-            debugPrint(widget.cart.toString());
+            debugPrint("${widget.bloc.state.cartItems}");
           },
           child: Text("$_count")),
       const SizedBox(width: 4),
@@ -50,11 +49,10 @@ class _CoffeecardState extends State<Coffeecard> {
               textStyle: Theme.of(context).textTheme.bodySmall,
               padding: const EdgeInsets.symmetric(vertical: 4.0)),
           onPressed: () {
-            widget.bloc.add(const AddItemToCartEvent());
+            widget.bloc.add(AddItemToCartEvent(widget.coffee));
             setState(() {
               if (_count < 10) {
                 _count++;
-                widget.cart.add(widget.coffee);
               }
             });
           },
@@ -71,10 +69,9 @@ class _CoffeecardState extends State<Coffeecard> {
             textStyle: Theme.of(context).textTheme.bodySmall,
             padding: const EdgeInsets.symmetric(vertical: 4.0)),
         onPressed: () {
-          widget.bloc.add(const AddItemToCartEvent());
+          widget.bloc.add(AddItemToCartEvent(widget.coffee));
           setState(() {
             _count++;
-            widget.cart.add(widget.coffee);
           });
         },
         child: Text(widget.coffee.prices[0].toString()));
