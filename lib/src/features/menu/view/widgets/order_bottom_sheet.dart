@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
 import 'package:flutter_course/src/features/menu/model/product.dart';
 
@@ -25,8 +27,8 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text("Ваш заказ",
-                        style: TextStyle(
+                    Text(AppLocalizations.of(context)!.bottomSheetTitle,
+                        style: const TextStyle(
                             fontSize: 24, fontWeight: FontWeight.bold)),
                     IconButton(
                         onPressed: () {
@@ -80,18 +82,18 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                     debugPrint('$orderJson');
                     widget.bloc.add(CreateNewOrderEvent(orderJson));
                     Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Заказ создан"),
-                        duration: Duration(seconds: 2)));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(AppLocalizations.of(context)!.snackBarSuccessMsg),
+                        duration: const Duration(seconds: 2)));
                     widget.bloc.add(const ClearCartEvent());
                   },
-                  child: const SizedBox(
+                  child: SizedBox(
                       width: double.infinity,
                       child: Padding(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Center(
-                            child: Text("Оформить заказ",
-                                style: TextStyle(
+                            child: Text(AppLocalizations.of(context)!.bottomSheetButton,
+                                style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.normal))),
                       ))),
