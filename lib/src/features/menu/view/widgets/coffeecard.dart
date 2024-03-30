@@ -6,7 +6,6 @@ import 'package:flutter_course/src/theme/app_colors.dart';
 class Coffeecard extends StatefulWidget {
   final Product coffee;
   final MenuBloc bloc;
-  // final List<Product> cart;
   const Coffeecard({super.key, required this.bloc, required this.coffee});
 
   @override
