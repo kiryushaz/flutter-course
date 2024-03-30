@@ -24,7 +24,6 @@ class _MenuScreenState extends State<MenuScreen> {
   @override
   void initState() {
     menuBloc.add(const LoadCategoriesEvent());
-    menuBloc.add(const LoadItemsEvent());
     _scrollController.addListener(() {});
     super.initState();
   }
@@ -52,6 +51,9 @@ class _MenuScreenState extends State<MenuScreen> {
     return BlocBuilder<MenuBloc, MenuState>(
         bloc: menuBloc,
         builder: (context, state) {
+          if (state is MenuLoadingState) {
+            menuBloc.add(const LoadItemsEvent());
+          }
           if (state is MenuSuccessState) {
             return Scaffold(
                 floatingActionButton: FloatingActionButton.extended(

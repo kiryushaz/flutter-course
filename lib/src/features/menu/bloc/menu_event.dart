@@ -8,14 +8,14 @@ final class LoadCategoriesEvent extends MenuEvent {
   const LoadCategoriesEvent();
   
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 final class LoadItemsEvent extends MenuEvent {
   const LoadItemsEvent();
   
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [];
 }
 
 final class AddItemToCartEvent extends MenuEvent {

@@ -16,10 +16,10 @@ final class MenuInitialState extends MenuState {
 }
 
 final class MenuLoadingState extends MenuState {
-  const MenuLoadingState();
+  const MenuLoadingState({super.categories, super.items, super.cartItems});
   
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [super.categories, super.items, super.cartItems];
 }
 
 final class MenuSuccessState extends MenuState {

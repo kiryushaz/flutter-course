@@ -6,5 +6,9 @@ final dio = Dio(
 Future<Map> createOrder(Map<String, int> orderJson) async {
   final response = await dio.post('/orders', data: {"positions": orderJson, "token": ""});
 
-  return response.data;
+  if (response.statusCode == 201) {
+    return response.data;
+  } else {
+    throw Exception('Failed to load products');
+  }
 }
