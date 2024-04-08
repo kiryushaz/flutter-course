@@ -1,32 +1,39 @@
 part of 'menu_bloc.dart';
 
+enum OrderStatus {
+  none,
+  success,
+  failure
+}
+
 sealed class MenuState extends Equatable {
   final List<Category>? categories;
   final List<Product>? items;
   final List<Product>? cartItems;
+  final OrderStatus status;
 
-  const MenuState({this.categories, this.items, this.cartItems});
+  const MenuState({this.categories, this.items, this.cartItems, this.status = OrderStatus.none});
 }
 
-final class MenuInitialState extends MenuState {
-  const MenuInitialState();
+final class MenuLoadingCategoriesState extends MenuState {
+  const MenuLoadingCategoriesState({super.categories, super.items, super.cartItems, super.status});
   
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [super.categories, super.items, super.cartItems, super.status];
 }
 
-final class MenuLoadingState extends MenuState {
-  const MenuLoadingState({super.categories, super.items, super.cartItems});
+final class MenuLoadingProductsState extends MenuState {
+  const MenuLoadingProductsState({super.categories, super.items, super.cartItems, super.status});
   
   @override
-  List<Object?> get props => [super.categories, super.items, super.cartItems];
+  List<Object?> get props => [super.categories, super.items, super.cartItems, super.status];
 }
 
 final class MenuSuccessState extends MenuState {
-  const MenuSuccessState({super.categories, super.items, super.cartItems});
+  const MenuSuccessState({super.categories, super.items, super.cartItems, super.status});
   
   @override
-  List<Object?> get props => [super.categories, super.items, super.cartItems];
+  List<Object?> get props => [super.categories, super.items, super.cartItems, super.status];
 }
 
 final class MenuFailureState extends MenuState {
