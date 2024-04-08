@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
-import 'package:flutter_course/src/features/menu/model/product.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/cart_button.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/category_button.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/order_bottom_sheet.dart';
@@ -17,13 +17,10 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   final _scrollController = ScrollController();
-  final menuBloc = MenuBloc();
-  List<Product> cart = [];
   int _selectedIndex = 1;
 
   @override
   void initState() {
-    menuBloc.add(const LoadCategoriesEvent());
     _scrollController.addListener(() {});
     super.initState();
   }
@@ -38,7 +35,7 @@ class _MenuScreenState extends State<MenuScreen> {
     });
   }
 
-  void selectCategory(index) {
+  void selectCategory(int index) {
     setState(() {
       if (index != _selectedIndex) {
         _selectedIndex = index;
@@ -46,114 +43,126 @@ class _MenuScreenState extends State<MenuScreen> {
     });
   }
 
+  void showSnackBar(String msg) {
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg), duration: const Duration(seconds: 2)
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MenuBloc, MenuState>(
-        bloc: menuBloc,
-        builder: (context, state) {
-          if (state is MenuLoadingState) {
-            menuBloc.add(const LoadItemsEvent());
-          }
-          if (state is MenuSuccessState) {
-            return Scaffold(
-                floatingActionButton: FloatingActionButton.extended(
-                    extendedPadding: const EdgeInsets.all(16.0),
-                    label: CartButton(bloc: menuBloc),
-                    onPressed: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return OrderBottomSheet(bloc: menuBloc, cart: cart);
-                          });
-                    }),
-                body: CustomScrollView(
-                    controller: ScrollController(),
-                    slivers: <Widget>[
-                      SliverAppBar(
-                        pinned: true,
-                        elevation: 0,
-                        shadowColor: Colors.transparent,
-                        surfaceTintColor: Colors.transparent,
-                        flexibleSpace: SizedBox(
-                          child: ListView.separated(
-                            controller: ScrollController(),
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 16.0),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: state.categories!.length,
-                            itemBuilder: (context, index) {
-                              final category = state.categories![index];
-                              return CategoryButton(
-                                  text: category.slug,
-                                  isActive: category.id == _selectedIndex,
-                                  onPressed: () {
-                                    scrollTo(category.id);
-                                    selectCategory(category.id);
-                                  });
-                            },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(width: 8.0),
-                          ),
-                        ),
+    return BlocConsumer<MenuBloc, MenuState>(
+      listener: (context, state) {
+        if (state.status == OrderStatus.success) {
+          showSnackBar(AppLocalizations.of(context)!.snackBarSuccessMsg);
+        } else if (state.status == OrderStatus.failure) {
+          showSnackBar(AppLocalizations.of(context)!.snackBarFailureMsg);
+        }
+      },
+      builder: (context, state) {
+        if (state is MenuLoadingCategoriesState) {
+          context.read<MenuBloc>().add(const LoadCategoriesEvent());
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is MenuLoadingProductsState) {
+          context.read<MenuBloc>().add(const LoadItemsEvent());
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state is MenuSuccessState) {
+          return Scaffold(
+            floatingActionButton: FloatingActionButton.extended(
+            extendedPadding: const EdgeInsets.all(16.0),
+            label: const CartButton(),
+            onPressed: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => const OrderBottomSheet()
+            )),
+            body: CustomScrollView(
+              controller: ScrollController(),
+              slivers: <Widget>[
+                SliverAppBar(
+                  pinned: true,
+                  elevation: 0,
+                  shadowColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  flexibleSpace: SizedBox(
+                    child: ListView.separated(
+                      controller: ScrollController(),
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0
                       ),
-                      SliverToBoxAdapter(
-                        child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.categories!.length,
+                      itemBuilder: (context, index) {
+                      final category = state.categories![index];
+                      return CategoryButton(
+                        text: category.slug,
+                        isActive: category.id == _selectedIndex,
+                        onPressed: () {
+                          scrollTo(category.id);
+                          selectCategory(category.id);
+                        }
+                      );
+                    },
+                    separatorBuilder: (context, index) =>
+                      const SizedBox(width: 8.0),
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: ListView.builder(
+                    controller: ScrollController(),
+                    shrinkWrap: true,
+                    itemCount: state.categories!.length,
+                    itemBuilder: (context, index) {
+                      if (state.items != null) {
+                        final category = state.categories![index];
+                        final coffee = state.items!
+                          .where((element) => element.category.id == category.id).toList();
+                        if (coffee.isEmpty) return Container();
+                        return CustomScrollView(
                           controller: ScrollController(),
                           shrinkWrap: true,
-                          itemCount: state.categories!.length,
-                          itemBuilder: (context, index) {
-                            if (state.items != null) {
-                              final category = state.categories![index];
-                              final coffee = state.items!
-                                  .where((element) =>
-                                      element.category.id == category.id)
-                                  .toList();
-                              if (coffee.isEmpty) return Container();
-                              return CustomScrollView(
-                                controller: ScrollController(),
-                                  shrinkWrap: true,
-                                  slivers: [
-                                    SliverPadding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16.0),
-                                      sliver: SliverToBoxAdapter(
-                                        key: GlobalObjectKey(category.id),
-                                        child: Text(category.slug,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge),
-                                      ),
-                                    ),
-                                    SliverPadding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      sliver: SliverGrid(
-                                          gridDelegate:
-                                              const SliverGridDelegateWithMaxCrossAxisExtent(
-                                            maxCrossAxisExtent: 320,
-                                            mainAxisExtent: 216,
-                                            mainAxisSpacing: 16.0,
-                                            crossAxisSpacing: 16.0,
-                                          ),
-                                          delegate: SliverChildBuilderDelegate(
-                                              (context, index) {
-                                            return Coffeecard(
-                                                bloc: menuBloc,
-                                                coffee: coffee[index]);
-                                          }, childCount: coffee.length)),
-                                    ),
-                                  ]);
-                            }
-                            return Container();
-                          },
-                        ),
-                      )
-                    ]));
-          } else if (state is MenuFailureState) {
-            return Scaffold(body: Center(child: Text(state.exception.toString())));
-          }
-
-          return const Center(child: CircularProgressIndicator());
-        });
+                          slivers: [
+                            SliverPadding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              sliver: SliverToBoxAdapter(
+                                key: GlobalObjectKey(category.id),
+                                child: Text(category.slug,
+                                  style: Theme.of(context).textTheme.titleLarge
+                                ),
+                              ),
+                            ),
+                            SliverPadding(
+                              padding: const EdgeInsets.all(16.0),
+                              sliver: SliverGrid(
+                                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                  maxCrossAxisExtent: 320,
+                                  mainAxisExtent: 216,
+                                  mainAxisSpacing: 16.0,
+                                  crossAxisSpacing: 16.0,
+                                ),
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => Coffeecard(coffee: coffee[index]), 
+                                  childCount: coffee.length
+                                )
+                              ),
+                            ),
+                          ]
+                        );
+                      }
+                      return Container();
+                    },
+                  ),
+                )
+              ]
+            )
+          );
+        } 
+        return Scaffold(body: Center(child: Text(AppLocalizations.of(context)!.msgException)));
+      }
+    );
   }
 }
