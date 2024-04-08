@@ -2,7 +2,7 @@ class Price {
   final String value;
   final String currency;
 
-  Price({required this.value, required this.currency});
+  const Price({required this.value, required this.currency});
 
   @override
   String toString() => '$value $currency';
