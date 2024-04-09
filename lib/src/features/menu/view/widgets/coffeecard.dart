@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
@@ -88,9 +89,18 @@ class _CoffeecardState extends State<Coffeecard> {
         color: CoffeeAppColors.cardBackground,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       child: Column(children: [
-        widget.coffee.imageUrl != ''
-            ? Image.network(widget.coffee.imageUrl, height: 100)
-            : Image.asset('assets/images/nopicture.png'),
+        CachedNetworkImage(
+          imageUrl: widget.coffee.imageUrl,
+          imageBuilder: (context, imageProvider) => Container(
+            height: 100,
+            decoration: BoxDecoration(
+                image:
+                    DecorationImage(image: imageProvider, fit: BoxFit.contain)),
+          ),
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+        ),
         Container(
           margin: const EdgeInsets.only(top: 8.0),
           child: Text(widget.coffee.name,
