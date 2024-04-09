@@ -7,6 +7,13 @@ import 'package:path/path.dart' as p;
 
 part 'database.g.dart';
 
+class Location extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get address => text()();
+  RealColumn get lat => real()();
+  RealColumn get lng => real()();
+}
+
 class Category extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get slug => text()();
@@ -21,7 +28,7 @@ class Product extends Table {
   RealColumn get price => real()();
 }
 
-@DriftDatabase(tables: [Category, Product])
+@DriftDatabase(tables: [Category, Product, Location])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
