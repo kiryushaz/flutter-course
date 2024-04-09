@@ -18,8 +18,11 @@ final class NetworkLocationsDataSource implements ILocationsDataSource {
         queryParameters: {'page': page, 'limit': limit});
 
     if (response.statusCode == 200) {
-      final data = response.data!['data'].map((json) => Location.fromJson(json));
-      return List<Location>.from(data);
+      final List data = response.data!['data'];
+      for (int i = 0; i < data.length; ) {
+        data[i].putIfAbsent("id", () => ++i);
+      }
+      return List<Location>.of(data.map((json) => Location.fromJson(json)));
     } else {
       throw const SocketException('Failed to load locations');
     }
