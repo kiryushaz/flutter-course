@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_course/src/theme/app_colors.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/cart_button.dart';
@@ -62,7 +63,10 @@ class _MenuScreenState extends State<MenuScreen> {
         }
       },
       builder: (context, state) {
-        if (state is MenuLoadingCategoriesState) {
+        if (state is MenuLoadingLocationsState) {
+          context.read<MenuBloc>().add(const LoadLocationsEvent());
+        }
+        else if (state is MenuLoadingCategoriesState) {
           context.read<MenuBloc>().add(const LoadCategoriesEvent());
         }
         else if (state is MenuLoadingProductsState) {
@@ -83,30 +87,43 @@ class _MenuScreenState extends State<MenuScreen> {
                 SliverAppBar(
                   pinned: true,
                   elevation: 0,
+                  collapsedHeight: 112,
                   shadowColor: Colors.transparent,
                   surfaceTintColor: Colors.transparent,
-                  flexibleSpace: SizedBox(
-                    child: ListView.separated(
-                      controller: ScrollController(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0
-                      ),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: state.categories?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final category = state.categories![index];
-                        return CategoryButton(
-                          text: category.slug,
-                          isActive: category.id == _selectedIndex,
-                          onPressed: () {
-                            scrollTo(category.id);
-                            selectCategory(category.id);
-                          }
-                        );
-                      },
-                      separatorBuilder: (context, index) =>
-                        const SizedBox(width: 8.0),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Column(
+                      children: [
+                        ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          leading: const Icon(Icons.location_on_outlined, color: CoffeeAppColors.primary),
+                          title: Text(state.locations?[0].address ?? 'null', style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                        SizedBox(
+                          height: 52,
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            controller: ScrollController(),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0
+                            ),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: state.categories?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              final category = state.categories![index];
+                              return CategoryButton(
+                                text: category.slug,
+                                isActive: category.id == _selectedIndex,
+                                onPressed: () {
+                                  scrollTo(category.id);
+                                  selectCategory(category.id);
+                                }
+                              );
+                            },
+                            separatorBuilder: (context, index) =>
+                              const SizedBox(width: 8.0),
+                          ),
+                        ),
+                      ]
                     ),
                   ),
                 ),
