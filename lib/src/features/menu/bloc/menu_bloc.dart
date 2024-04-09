@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_course/src/features/menu/data/category_repository.dart';
+import 'package:flutter_course/src/features/menu/data/location_repository.dart';
 import 'package:flutter_course/src/features/menu/data/order_repository.dart';
 import 'package:flutter_course/src/features/menu/data/product_repository.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
@@ -14,19 +15,22 @@ part 'menu_event.dart';
 part 'menu_state.dart';
 
 class MenuBloc extends Bloc<MenuEvent, MenuState> {
+  final ILocationRepository _locationRepository;
   final IProductRepository _productRepository;
   final ICategoryRepository _categoryRepository;
   final IOrderRepository _orderRepository;
   
   MenuBloc({
+    required ILocationRepository locationRepository,
     required IProductRepository productRepository, 
     required ICategoryRepository categoryRepository,
     required IOrderRepository orderRepository,
   }) : 
+  _locationRepository = locationRepository,
   _productRepository = productRepository, 
   _categoryRepository = categoryRepository, 
   _orderRepository = orderRepository,
-  super(const MenuLoadingCategoriesState()) {
+  super(const MenuLoadingLocationsState()) {
     on<LoadLocationsEvent>(_onLoadLocations);
     on<LoadCategoriesEvent>(_onLoadCategories);
     on<LoadItemsEvent>(_onLoadItems);
@@ -42,7 +46,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
   ) async {
     log("fetching locations");
     try {
-      final locations = <Location>[];
+      final locations = await _locationRepository.loadLocations();
       emit(MenuLoadingCategoriesState(
         locations: locations,
         categories: state.categories, 
@@ -89,6 +93,12 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
           cartItems: state.cartItems
         ));
       }
+      emit(MenuSuccessState(
+        locations: state.locations,
+        categories: state.categories,
+        items: items,
+        cartItems: state.cartItems
+      ));
     } catch (e) {
       emit(MenuFailureState(exception: e));
     }
