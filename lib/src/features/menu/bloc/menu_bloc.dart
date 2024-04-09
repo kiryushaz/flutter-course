@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_course/src/features/menu/data/interface/order_repository.dart';
-import 'package:flutter_course/src/features/menu/data/interface/category_repository.dart';
-import 'package:flutter_course/src/features/menu/data/interface/product_repository.dart';
+import 'package:flutter_course/src/features/menu/data/category_repository.dart';
+import 'package:flutter_course/src/features/menu/data/order_repository.dart';
+import 'package:flutter_course/src/features/menu/data/product_repository.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
 import 'package:flutter_course/src/features/menu/model/product.dart';
 
@@ -36,7 +37,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     LoadCategoriesEvent event, 
     Emitter<MenuState> emit
   ) async {
-    debugPrint("fetching categories");
+    log("fetching categories");
     try {
       final categories = await _categoryRepository.loadCategories();
       emit(MenuLoadingProductsState(
@@ -53,14 +54,14 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     try {
       List<Product> items = [];
       for (var category in state.categories!) {
-        debugPrint("fetching product with category id = ${category.id}");
+        log("fetching product with category id = ${category.id}");
         final result = await _productRepository.loadProducts(category: category, limit: 10);
         items.addAll(result);
+        emit(MenuSuccessState(
+            categories: state.categories,
+            items: items,
+            cartItems: state.cartItems));
       }
-      emit(MenuSuccessState(
-          categories: state.categories,
-          items: items,
-          cartItems: state.cartItems));
     } catch (e) {
       emit(MenuFailureState(exception: e));
     }
@@ -74,7 +75,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     cart.add(event.item);
     emit(MenuSuccessState(
         categories: state.categories, items: state.items, cartItems: cart));
-    debugPrint("Added item to cart");
+    log("Added item to cart");
   }
 
   Future<void> _onRemoveItemFromCart(
@@ -85,7 +86,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     cart.remove(event.item);
     emit(MenuSuccessState(
         categories: state.categories, items: state.items, cartItems: cart));
-    debugPrint("Remove item from cart");
+    log("Remove item from cart");
   }
 
   Future<void> _onClearCart(
@@ -94,7 +95,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
   ) async {
     emit(MenuSuccessState(
         categories: state.categories, items: state.items, cartItems: const []));
-    debugPrint("Cart cleared");
+    log("Cart cleared");
   }
 
   Future<void> _onCreateNewOrder(
@@ -102,8 +103,8 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     Emitter<MenuState> emit
   ) async {
     try {
-      final result = await _orderRepository.createOrder(orderJson: event.orderJson);
-      debugPrint('$result');
+      final result = await _orderRepository.loadOrder(orderJson: event.orderJson);
+      log('$result');
       emit(MenuSuccessState(
         categories: state.categories, 
         items: state.items, 
@@ -115,8 +116,8 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
         items: state.items, 
         cartItems: state.cartItems, 
         status: OrderStatus.failure));
-      debugPrint("Exception: $e");
+      log("Exception: $e");
     }
-    debugPrint("Create new order");
+    log("Create new order");
   }
 }

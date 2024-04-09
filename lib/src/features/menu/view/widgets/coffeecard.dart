@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
@@ -37,7 +39,7 @@ class _CoffeecardState extends State<Coffeecard> {
             textStyle: Theme.of(context).textTheme.bodySmall,
             padding: const EdgeInsets.symmetric(vertical: 4.0)),
           onPressed: () {
-            debugPrint("${bloc.state.cartItems}");
+            log("${bloc.state.cartItems}");
           },
           child: Text("$_count")),
         const SizedBox(width: 4),

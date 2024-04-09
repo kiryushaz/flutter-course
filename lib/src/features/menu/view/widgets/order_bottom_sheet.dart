@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -77,7 +79,7 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                           borderRadius: BorderRadius.all(Radius.circular(16)))),
                   onPressed: () {
                     final orderJson = createOrder(context.read<MenuBloc>().state.cartItems!);
-                    debugPrint('$orderJson');
+                    log('$orderJson');
                     context.read<MenuBloc>().add(CreateNewOrderEvent(orderJson));
                     Navigator.of(context).pop();
                     context.read<MenuBloc>().add(const ClearCartEvent());
