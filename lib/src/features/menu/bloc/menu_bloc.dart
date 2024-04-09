@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -104,7 +105,8 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
   ) async {
     try {
       final result = await _orderRepository.loadOrder(orderJson: event.orderJson);
-      log('$result');
+      log(result.toString());
+      if (result.isEmpty) throw const SocketException("No data");
       emit(MenuSuccessState(
         categories: state.categories, 
         items: state.items, 
@@ -116,7 +118,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
         items: state.items, 
         cartItems: state.cartItems, 
         status: OrderStatus.failure));
-      log("Exception: $e");
+      log(e.toString());
     }
     log("Create new order");
   }
