@@ -7,6 +7,7 @@ import 'package:flutter_course/src/features/menu/data/category_repository.dart';
 import 'package:flutter_course/src/features/menu/data/order_repository.dart';
 import 'package:flutter_course/src/features/menu/data/product_repository.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
+import 'package:flutter_course/src/features/menu/model/location.dart';
 import 'package:flutter_course/src/features/menu/model/product.dart';
 
 part 'menu_event.dart';
@@ -26,12 +27,31 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
   _categoryRepository = categoryRepository, 
   _orderRepository = orderRepository,
   super(const MenuLoadingCategoriesState()) {
+    on<LoadLocationsEvent>(_onLoadLocations);
     on<LoadCategoriesEvent>(_onLoadCategories);
     on<LoadItemsEvent>(_onLoadItems);
     on<AddItemToCartEvent>(_onAddItemToCart);
     on<RemoveItemFromCartEvent>(_onRemoveItemFromCart);
     on<ClearCartEvent>(_onClearCart);
     on<CreateNewOrderEvent>(_onCreateNewOrder);
+  }
+
+  Future<void> _onLoadLocations(
+    LoadLocationsEvent event,
+    Emitter<MenuState> emit
+  ) async {
+    log("fetching locations");
+    try {
+      final locations = <Location>[];
+      emit(MenuLoadingCategoriesState(
+        locations: locations,
+        categories: state.categories, 
+        items: state.items, 
+        cartItems: const []
+      ));
+    } catch (e) {
+      emit(MenuFailureState(exception: e));
+    }
   }
 
   Future<void> _onLoadCategories(
@@ -42,7 +62,11 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     try {
       final categories = await _categoryRepository.loadCategories();
       emit(MenuLoadingProductsState(
-          categories: categories, items: state.items, cartItems: const []));
+        locations: state.locations,
+        categories: categories, 
+        items: state.items, 
+        cartItems: const []
+      ));
     } catch (e) {
       emit(MenuFailureState(exception: e));
     }
@@ -59,9 +83,11 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
         final result = await _productRepository.loadProducts(category: category, limit: 10);
         items.addAll(result);
         emit(MenuSuccessState(
-            categories: state.categories,
-            items: items,
-            cartItems: state.cartItems));
+          locations: state.locations,
+          categories: state.categories,
+          items: items,
+          cartItems: state.cartItems
+        ));
       }
     } catch (e) {
       emit(MenuFailureState(exception: e));
@@ -75,7 +101,11 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     List<Product> cart = List<Product>.from(state.cartItems!);
     cart.add(event.item);
     emit(MenuSuccessState(
-        categories: state.categories, items: state.items, cartItems: cart));
+      locations: state.locations,
+      categories: state.categories,
+      items: state.items,
+      cartItems: cart
+    ));
     log("Added item to cart");
   }
 
@@ -86,7 +116,11 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     List<Product> cart = List<Product>.from(state.cartItems!);
     cart.remove(event.item);
     emit(MenuSuccessState(
-        categories: state.categories, items: state.items, cartItems: cart));
+      locations: state.locations,
+      categories: state.categories,
+      items: state.items,
+      cartItems: cart
+    ));
     log("Remove item from cart");
   }
 
@@ -95,7 +129,11 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     Emitter<MenuState> emit
   ) async {
     emit(MenuSuccessState(
-        categories: state.categories, items: state.items, cartItems: const []));
+      locations: state.locations,
+      categories: state.categories,
+      items: state.items,
+      cartItems: const []
+    ));
     log("Cart cleared");
   }
 
@@ -108,12 +146,14 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
       log(result.toString());
       if (result.isEmpty) throw const SocketException("No data");
       emit(MenuSuccessState(
+        locations: state.locations,
         categories: state.categories, 
         items: state.items, 
         cartItems: state.cartItems, 
         status: OrderStatus.success));
     } on Exception catch (e) {
       emit(MenuSuccessState(
+        locations: state.locations,
         categories: state.categories, 
         items: state.items, 
         cartItems: state.cartItems, 

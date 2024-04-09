@@ -4,6 +4,13 @@ sealed class MenuEvent extends Equatable {
   const MenuEvent();
 }
 
+final class LoadLocationsEvent extends MenuEvent {
+  const LoadLocationsEvent();
+  
+  @override
+  List<Object?> get props => [];
+}
+
 final class LoadCategoriesEvent extends MenuEvent {
   const LoadCategoriesEvent();
   
