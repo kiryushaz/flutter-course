@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_course/src/features/menu/data/data_sources/category_data_source.dart';
 import 'package:flutter_course/src/features/menu/data/data_sources/savable_category_data_source.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
@@ -24,6 +25,8 @@ final class CategoryRepository implements ICategoryRepository {
     try {
       data = await _networkCategoriesDataSource.fetchCategories();
       _dbCategoriesDataSource.saveCategories(categories: data);
+    } on DioException {
+      data = await _dbCategoriesDataSource.fetchCategories();
     } on SocketException {
       data = await _dbCategoriesDataSource.fetchCategories();
     }

@@ -37,7 +37,7 @@ final class DbProductsSource implements ISavableProductsDataSource {
   @override
   Future<void> saveProducts({required List<Product> products}) async {
     for (var product in products) {
-      _db.into(_db.product).insert(
+      _db.into(_db.product).insertOnConflictUpdate(
         db.ProductCompanion.insert(
           id: Value(product.id),
           name: product.name,
@@ -45,7 +45,7 @@ final class DbProductsSource implements ISavableProductsDataSource {
           imageUrl: product.imageUrl,
           price: double.parse(product.prices[0].value),
           categoryId: product.category.id,
-        )
+        ),
       );
     }
   }

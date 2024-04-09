@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_course/src/features/menu/data/data_sources/product_data_source.dart';
 import 'package:flutter_course/src/features/menu/data/data_sources/savable_product_data_source.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
@@ -25,6 +26,8 @@ final class ProductRepository implements IProductRepository {
     try {
       data = await _networkProductsDataSource.fetchProducts(categoryId: category.id, page: page, limit: limit);
       _dbProductsDataSource.saveProducts(products: data);
+    } on DioException {
+      data = await _dbProductsDataSource.fetchProducts(categoryId: category.id, page: page, limit: limit);
     } on SocketException {
       data = await _dbProductsDataSource.fetchProducts(categoryId: category.id, page: page, limit: limit);
     }

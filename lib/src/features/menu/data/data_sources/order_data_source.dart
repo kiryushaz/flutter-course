@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
 abstract interface class IOrderDataSource {
-  Future<Map<String, int>> createOrder({required Map<String, int> orderJson});
+  Future<Map<String, dynamic>> createOrder({required Map<String, int> orderJson});
 }
 
 final class NetworkOrdersDataSource implements IOrderDataSource {
@@ -10,7 +10,7 @@ final class NetworkOrdersDataSource implements IOrderDataSource {
   const NetworkOrdersDataSource({required Dio dio}) : _dio = dio;
   
   @override
-  Future<Map<String, int>> createOrder({required Map<String, int> orderJson}) async {
+  Future<Map<String, dynamic>> createOrder({required Map<String, int> orderJson}) async {
     final response = await _dio.post('/orders', data: {"positions": orderJson, "token": ""});
 
     if (response.statusCode == 201) {
