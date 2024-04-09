@@ -1,26 +1,32 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
-import 'package:flutter_course/src/features/menu/data/interface/category_repository.dart';
+import 'package:flutter_course/src/features/menu/data/data_sources/category_data_source.dart';
+import 'package:flutter_course/src/features/menu/data/data_sources/savable_category_data_source.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
 
-final dio = Dio(BaseOptions(baseUrl: 'https://coffeeshop.academy.effective.band/api/v1'));
+abstract interface class ICategoryRepository {
+  Future<List<Category>> loadCategories({int page = 0, int limit = 25});
+}
 
 final class CategoryRepository implements ICategoryRepository {
-  final Dio _dio;
+  final ICategoriesDataSource _networkCategoriesDataSource;
+  final ISavableCategoriesDataSource _dbCategoriesDataSource;
 
-  const CategoryRepository({required Dio dio}) : _dio = dio;
+  const CategoryRepository({
+    required ICategoriesDataSource networkCategoriesDataSource,
+    required ISavableCategoriesDataSource dbCategoriesDataSource,
+  }) : _networkCategoriesDataSource = networkCategoriesDataSource,
+  _dbCategoriesDataSource = dbCategoriesDataSource;
 
   @override
   Future<List<Category>> loadCategories({int page = 0, int limit = 25}) async {
-    final response = await _dio.get('/products/categories',
-        queryParameters: {'page': page, 'limit': limit});
-
-    if (response.statusCode == 200) {
-      final data = response.data!['data'].map((json) => Category.fromJson(json));
-      return List<Category>.from(data);
-    } else {
-      throw const SocketException('Failed to load categories');
+    var data = <Category>[];
+    try {
+      data = await _networkCategoriesDataSource.fetchCategories();
+      _dbCategoriesDataSource.saveCategories(categories: data);
+    } on SocketException {
+      data = await _dbCategoriesDataSource.fetchCategories();
     }
+    return data;
   }
 }
