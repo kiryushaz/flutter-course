@@ -14,24 +14,28 @@ class LocationsList extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: ImageSources.backArrowIcon),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: ImageSources.backArrowIcon),
         title: Text(
           AppLocalizations.of(context)!.locationsListTitle,
-          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 24),
         ),
       ),
       body: ListView.builder(
         itemCount: context.read<MenuBloc>().state.locations?.length ?? 0,
         itemBuilder: (context, index) {
+          final location = context.read<MenuBloc>().state.locations![index];
           return ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-            title: Text(context.read<MenuBloc>().state.locations![index].address),
+            title: Text(location.address),
             trailing: ImageSources.rightArrowIcon,
             onTap: () {
-              log("Selected index $index");
+              log("Selected location ${location.id}");
+              while (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop(location.id);
+              }
             },
           );
         },

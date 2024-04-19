@@ -8,6 +8,7 @@ import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/cart_button.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/category_button.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/order_bottom_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'widgets/coffeecard.dart';
 
@@ -20,33 +21,42 @@ class MenuScreen extends StatefulWidget {
 
 class _MenuScreenState extends State<MenuScreen> {
   final _scrollController = ScrollController();
-  int _selectedIndex = 1;
+  int _categoryIndex = 1;
+  int _locationIndex = 1;
 
   @override
   void initState() {
-    _scrollController.addListener(() {});
     super.initState();
+    _scrollController.addListener(() {});
+    _loadPreferences();
   }
 
-  void scrollTo(int id) {
+  void _loadPreferences() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _locationIndex = prefs.getInt('location') ?? _locationIndex;
+    });
+  }
+
+  void _scrollTo(int id) {
     setState(() {
       final targetContext = GlobalObjectKey(id).currentContext;
-      if (targetContext != null && id != _selectedIndex) {
+      if (targetContext != null && id != _categoryIndex) {
         Scrollable.ensureVisible(targetContext,
             duration: const Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
   }
 
-  void selectCategory(int index) {
+  void _selectCategory(int index) {
     setState(() {
-      if (index != _selectedIndex) {
-        _selectedIndex = index;
+      if (index != _categoryIndex) {
+        _categoryIndex = index;
       }
     });
   }
 
-  void showSnackBar(String msg) {
+  void _showSnackBar(String msg) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(msg), duration: const Duration(seconds: 2)));
@@ -56,9 +66,9 @@ class _MenuScreenState extends State<MenuScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<MenuBloc, MenuState>(listener: (context, state) {
       if (state.status == OrderStatus.success) {
-        showSnackBar(AppLocalizations.of(context)!.snackBarSuccessMsg);
+        _showSnackBar(AppLocalizations.of(context)!.snackBarSuccessMsg);
       } else if (state.status == OrderStatus.failure) {
-        showSnackBar(AppLocalizations.of(context)!.snackBarFailureMsg);
+        _showSnackBar(AppLocalizations.of(context)!.snackBarFailureMsg);
       }
     }, builder: (context, state) {
       if (state is MenuLoadingLocationsState) {
@@ -91,11 +101,20 @@ class _MenuScreenState extends State<MenuScreen> {
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 16.0),
                           leading: ImageSources.locationIcon,
-                          title: Text(state.locations?[0].address ?? 'null',
+                          title: Text(
+                              state.locations![_locationIndex - 1].address,
                               style: Theme.of(context).textTheme.bodyMedium),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const MapScreen()));
+                          onTap: () async {
+                            final int? idx = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => const MapScreen()));
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.setInt(
+                                'location', idx ?? _locationIndex);
+                            setState(() {
+                              _locationIndex = prefs.getInt('location')!;
+                            });
                           },
                         ),
                         SizedBox(
@@ -111,10 +130,10 @@ class _MenuScreenState extends State<MenuScreen> {
                               final category = state.categories![index];
                               return CategoryButton(
                                   text: category.slug,
-                                  isActive: category.id == _selectedIndex,
+                                  isActive: category.id == _categoryIndex,
                                   onPressed: () {
-                                    scrollTo(category.id);
-                                    selectCategory(category.id);
+                                    _scrollTo(category.id);
+                                    _selectCategory(category.id);
                                   });
                             },
                             separatorBuilder: (context, index) =>
@@ -180,7 +199,6 @@ class _MenuScreenState extends State<MenuScreen> {
             : AppLocalizations.of(context)!.msgException;
         return Scaffold(body: Center(child: Text(exceptionMsg)));
       }
-
       return const Center(child: CircularProgressIndicator());
     });
   }
