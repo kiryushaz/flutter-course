@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
 import 'package:flutter_course/src/features/menu/model/product.dart';
 import 'package:flutter_course/src/theme/app_colors.dart';
+import 'package:flutter_course/src/theme/image_sources.dart';
 
 class Coffeecard extends StatefulWidget {
   final Product coffee;
@@ -24,57 +25,56 @@ class _CoffeecardState extends State<Coffeecard> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(32, 32),
-            textStyle: Theme.of(context).textTheme.bodySmall,
-            padding: const EdgeInsets.symmetric(vertical: 4.0)),
-          onPressed: () {
-            bloc.add(RemoveItemFromCartEvent(widget.coffee));
-            setState(() => _count--);
-          },
-          child: const Text("-")),
+            style: ElevatedButton.styleFrom(
+                minimumSize: const Size(32, 32),
+                textStyle: Theme.of(context).textTheme.bodySmall,
+                padding: const EdgeInsets.symmetric(vertical: 4.0)),
+            onPressed: () {
+              bloc.add(RemoveItemFromCartEvent(widget.coffee));
+              setState(() => _count--);
+            },
+            child: const Text("-")),
         const SizedBox(width: 4),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(52, 32),
-            textStyle: Theme.of(context).textTheme.bodySmall,
-            padding: const EdgeInsets.symmetric(vertical: 4.0)),
-          onPressed: () {
-            log("${bloc.state.cartItems}");
-          },
-          child: Text("$_count")),
+            style: ElevatedButton.styleFrom(
+                minimumSize: const Size(52, 32),
+                textStyle: Theme.of(context).textTheme.bodySmall,
+                padding: const EdgeInsets.symmetric(vertical: 4.0)),
+            onPressed: () {
+              log("${bloc.state.cartItems}");
+            },
+            child: Text("$_count")),
         const SizedBox(width: 4),
         ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(32, 32),
-            textStyle: Theme.of(context).textTheme.bodySmall,
-            padding: const EdgeInsets.symmetric(vertical: 4.0)),
-          onPressed: () {
-            bloc.add(AddItemToCartEvent(widget.coffee));
-            setState(() {
-              if (_count < 10) {
-                _count++;
-              }
-            });
-          },
-          child: const Text("+")
-        ),
+            style: ElevatedButton.styleFrom(
+                minimumSize: const Size(32, 32),
+                textStyle: Theme.of(context).textTheme.bodySmall,
+                padding: const EdgeInsets.symmetric(vertical: 4.0)),
+            onPressed: () {
+              bloc.add(AddItemToCartEvent(widget.coffee));
+              setState(() {
+                if (_count < 10) {
+                  _count++;
+                }
+              });
+            },
+            child: const Text("+")),
       ],
     );
   }
 
   Widget showPurchaseButton(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size(116, 32),
-        elevation: 0,
-        textStyle: Theme.of(context).textTheme.bodySmall,
-        padding: const EdgeInsets.symmetric(vertical: 4.0)),
-      onPressed: () {
-        context.read<MenuBloc>().add(AddItemToCartEvent(widget.coffee));
-        setState(() => _count++);
-      },
-      child: Text(widget.coffee.prices[0].toString()));
+        style: ElevatedButton.styleFrom(
+            minimumSize: const Size(116, 32),
+            elevation: 0,
+            textStyle: Theme.of(context).textTheme.bodySmall,
+            padding: const EdgeInsets.symmetric(vertical: 4.0)),
+        onPressed: () {
+          context.read<MenuBloc>().add(AddItemToCartEvent(widget.coffee));
+          setState(() => _count++);
+        },
+        child: Text(widget.coffee.prices[0].toString()));
   }
 
   @override
@@ -86,8 +86,9 @@ class _CoffeecardState extends State<Coffeecard> {
       width: 180,
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: ShapeDecoration(
-        color: CoffeeAppColors.cardBackground,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+          color: CoffeeAppColors.cardBackground,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
       child: Column(children: [
         CachedNetworkImage(
           imageUrl: widget.coffee.imageUrl,
@@ -99,20 +100,19 @@ class _CoffeecardState extends State<Coffeecard> {
           ),
           progressIndicatorBuilder: (context, url, downloadProgress) =>
               CircularProgressIndicator(value: downloadProgress.progress),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
+          errorWidget: (context, url, error) => ImageSources.errorIcon,
         ),
         Container(
-          margin: const EdgeInsets.only(top: 8.0),
-          child: Text(widget.coffee.name,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              fontSize: 16
-            )
-          )
-        ),
-        _count > 0 ? changeCountPurchasedItems(context) : showPurchaseButton(context)
+            margin: const EdgeInsets.only(top: 8.0),
+            child: Text(widget.coffee.name,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16))),
+        _count > 0
+            ? changeCountPurchasedItems(context)
+            : showPurchaseButton(context)
       ]),
     );
   }

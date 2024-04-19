@@ -14,12 +14,12 @@ final class NetworkLocationsDataSource implements ILocationsDataSource {
 
   @override
   Future<List<Location>> fetchLocations({int page = 0, int limit = 25}) async {
-    final response = await _dio.get('/locations',
-        queryParameters: {'page': page, 'limit': limit});
+    final response = await _dio
+        .get('/locations', queryParameters: {'page': page, 'limit': limit});
 
     if (response.statusCode == 200) {
       final List data = response.data!['data'];
-      for (int i = 0; i < data.length; ) {
+      for (int i = 0; i < data.length;) {
         data[i].putIfAbsent("id", () => ++i);
       }
       return List<Location>.of(data.map((json) => Location.fromJson(json)));

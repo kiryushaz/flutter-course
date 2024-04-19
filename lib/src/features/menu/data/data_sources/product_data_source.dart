@@ -4,7 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_course/src/features/menu/model/product.dart';
 
 abstract interface class IProductsDataSource {
-  Future<List<Product>> fetchProducts({required int categoryId, int page = 0, int limit = 25});
+  Future<List<Product>> fetchProducts(
+      {required int categoryId, int page = 0, int limit = 25});
 }
 
 final class NetworkProductsDataSource implements IProductsDataSource {
@@ -13,7 +14,8 @@ final class NetworkProductsDataSource implements IProductsDataSource {
   const NetworkProductsDataSource({required Dio dio}) : _dio = dio;
 
   @override
-  Future<List<Product>> fetchProducts({required int categoryId, int page = 0, int limit = 25}) async {
+  Future<List<Product>> fetchProducts(
+      {required int categoryId, int page = 0, int limit = 25}) async {
     final response = await _dio.get('/products', queryParameters: {
       'category': categoryId,
       'page': page,

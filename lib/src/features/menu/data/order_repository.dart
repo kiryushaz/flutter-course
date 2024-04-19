@@ -10,12 +10,12 @@ abstract interface class IOrderRepository {
 final class OrderRepository implements IOrderRepository {
   final IOrderDataSource _orderDataSource;
 
-  const OrderRepository({
-    required IOrderDataSource orderDataSource
-  }) : _orderDataSource = orderDataSource;
+  const OrderRepository({required IOrderDataSource orderDataSource})
+      : _orderDataSource = orderDataSource;
 
   @override
-  Future<Map<String, dynamic>> loadOrder({required Map<String, int> orderJson}) async {
+  Future<Map<String, dynamic>> loadOrder(
+      {required Map<String, int> orderJson}) async {
     try {
       return await _orderDataSource.createOrder(orderJson: orderJson);
     } on DioException {

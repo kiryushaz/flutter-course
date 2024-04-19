@@ -30,31 +30,28 @@ class CoffeeShopApp extends StatelessWidget {
     return BlocProvider(
       create: (context) => MenuBloc(
         locationRepository: LocationRepository(
-          networkLocationsDataSource: NetworkLocationsDataSource(dio: dio),
-          dbLocationsDataSource: DbLocationsDataSource(db: db)
-        ),
+            networkLocationsDataSource: NetworkLocationsDataSource(dio: dio),
+            dbLocationsDataSource: DbLocationsDataSource(db: db)),
         categoryRepository: CategoryRepository(
-          networkCategoriesDataSource: NetworkCategoriesDataSource(dio: dio),
-          dbCategoriesDataSource: DbCategoriesDataSource(db: db)
-        ),
+            networkCategoriesDataSource: NetworkCategoriesDataSource(dio: dio),
+            dbCategoriesDataSource: DbCategoriesDataSource(db: db)),
         productRepository: ProductRepository(
-          networkProductsDataSource: NetworkProductsDataSource(dio: dio),
-          dbProductsDataSource: DbProductsSource(db: db)
-        ),
-        orderRepository: OrderRepository(
-          orderDataSource: NetworkOrdersDataSource(dio: dio)
-        ),
+            networkProductsDataSource: NetworkProductsDataSource(dio: dio),
+            dbProductsDataSource: DbProductsSource(db: db)),
+        orderRepository:
+            OrderRepository(orderDataSource: NetworkOrdersDataSource(dio: dio)),
       ),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: coffeeAppTheme,
-        title: 'Coffee Shop App',
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: Container(
-          color: coffeeAppTheme.colorScheme.background,
-          child: const SafeArea(child: MenuScreen()),
-        )
+      child: Container(
+        color: coffeeAppTheme.colorScheme.background,
+        child: SafeArea(
+          child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: coffeeAppTheme,
+              title: 'Coffee Shop App',
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: const MenuScreen()),
+        ),
       ),
     );
   }

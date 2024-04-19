@@ -16,8 +16,8 @@ final class LocationRepository implements ILocationRepository {
   const LocationRepository({
     required ILocationsDataSource networkLocationsDataSource,
     required ISavableLocationsDataSource dbLocationsDataSource,
-  }) : _networkLocationsDataSource = networkLocationsDataSource,
-  _dbLocationsDataSource = dbLocationsDataSource;
+  })  : _networkLocationsDataSource = networkLocationsDataSource,
+        _dbLocationsDataSource = dbLocationsDataSource;
 
   @override
   Future<List<Location>> loadLocations({int page = 0, int limit = 25}) async {
