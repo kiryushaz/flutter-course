@@ -1,0 +1,41 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
+import 'package:flutter_course/src/theme/image_sources.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+class LocationsList extends StatelessWidget {
+  const LocationsList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: ImageSources.backArrowIcon),
+        title: Text(
+          AppLocalizations.of(context)!.locationsListTitle,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(fontSize: 24),
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: context.read<MenuBloc>().state.locations?.length ?? 0,
+        itemBuilder: (context, index) {
+          return ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+            title: Text(context.read<MenuBloc>().state.locations![index].address),
+            trailing: ImageSources.rightArrowIcon,
+            onTap: () {
+              log("Selected index $index");
+            },
+          );
+        },
+      ),
+    );
+  }
+}
