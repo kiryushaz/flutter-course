@@ -67,14 +67,9 @@ class _MapScreenState extends State<MapScreen> {
               mapId: MapObjectId("Point ${point.id}"),
               point: Point(latitude: point.lat, longitude: point.lng),
               opacity: 1,
-              icon: PlacemarkIcon.single(
-                PlacemarkIconStyle(
-                  image: BitmapDescriptor.fromAssetImage(
-                    ImageSources.mapPoint
-                  ),
-                  scale: 2.0
-                )
-              ),
+              icon: PlacemarkIcon.single(PlacemarkIconStyle(
+                  image: BitmapDescriptor.fromAssetImage(ImageSources.mapPoint),
+                  scale: 2.0)),
             ))
         .toList();
   }

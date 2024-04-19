@@ -20,6 +20,7 @@ final coffeeAppTheme = ThemeData(
     textTheme: const TextTheme(
         titleLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
         titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        bodyLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
         bodyMedium: TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
         bodySmall: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
     useMaterial3: true);

@@ -106,10 +106,7 @@ class _CoffeecardState extends State<Coffeecard> {
             margin: const EdgeInsets.only(top: 8.0),
             child: Text(widget.coffee.name,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16))),
+                style: Theme.of(context).textTheme.titleMedium)),
         _count > 0
             ? changeCountPurchasedItems(context)
             : showPurchaseButton(context)

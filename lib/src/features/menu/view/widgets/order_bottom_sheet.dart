@@ -30,8 +30,10 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(AppLocalizations.of(context)!.bottomSheetTitle,
-                        style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(fontSize: 24)),
                     IconButton(
                         onPressed: () {
                           context.read<MenuBloc>().add(const ClearCartEvent());
@@ -88,8 +90,10 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                             .cartItems![index]
                             .prices[0]
                             .toString(),
-                        style: const TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)));
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold)));
               },
               separatorBuilder: (context, index) => const SizedBox(height: 10),
             ),
@@ -116,9 +120,7 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                         child: Center(
                             child: Text(
                                 AppLocalizations.of(context)!.bottomSheetButton,
-                                style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.normal))),
+                                style: Theme.of(context).textTheme.bodyLarge)),
                       ))),
             )
           ],
