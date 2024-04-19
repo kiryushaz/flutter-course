@@ -4,5 +4,6 @@
     "bottomSheetTitle": "Your order",
     "bottomSheetButton": "Checkout",
     "snackBarSuccessMsg": "Order created",
-    "snackBarFailureMsg": "There was an error when ordering"
+    "snackBarFailureMsg": "There was an error when ordering",
+    "locationsListTitle": "Our coffee shops"
 }

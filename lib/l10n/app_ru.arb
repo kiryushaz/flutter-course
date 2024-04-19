@@ -4,5 +4,6 @@
     "bottomSheetTitle": "Ваш заказ",
     "bottomSheetButton": "Оформить заказ",
     "snackBarSuccessMsg": "Заказ создан",
-    "snackBarFailureMsg": "Возникла ошибка при заказе"
+    "snackBarFailureMsg": "Возникла ошибка при заказе",
+    "locationsListTitle": "Наши кофейни"
 }
