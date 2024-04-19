@@ -1,8 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_course/src/features/map/widgets/locations_list.dart';
+import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
+import 'package:flutter_course/src/features/menu/model/location.dart';
 import 'package:flutter_course/src/theme/app_colors.dart';
+import 'package:flutter_course/src/theme/image_sources.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 
@@ -55,6 +59,26 @@ class _MapScreenState extends State<MapScreen> {
     return await Geolocator.getCurrentPosition();
   }
 
+  List<PlacemarkMapObject> _getCoffeeLocations() {
+    final List<Location> locations = context.read<MenuBloc>().state.locations!;
+
+    return locations
+        .map((point) => PlacemarkMapObject(
+              mapId: MapObjectId("Point ${point.id}"),
+              point: Point(latitude: point.lat, longitude: point.lng),
+              opacity: 1,
+              icon: PlacemarkIcon.single(
+                PlacemarkIconStyle(
+                  image: BitmapDescriptor.fromAssetImage(
+                    ImageSources.mapPoint
+                  ),
+                  scale: 2.0
+                )
+              ),
+            ))
+        .toList();
+  }
+
   void _showSnackBar(String msg) {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -67,6 +91,7 @@ class _MapScreenState extends State<MapScreen> {
       body: Stack(
         children: [
           YandexMap(
+            mapObjects: _getCoffeeLocations(),
             onMapCreated: (controller) async {
               try {
                 final position = await _determinePosition();

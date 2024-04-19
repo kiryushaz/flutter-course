@@ -10,4 +10,5 @@ sealed class ImageSources {
   static const cartIcon = Icon(Icons.shopping_basket_outlined);
   static const backArrowIcon = Icon(Icons.arrow_back);
   static const rightArrowIcon = Icon(Icons.keyboard_arrow_right_outlined);
+  static const mapPoint = "assets/images/map_point.png";
 }
