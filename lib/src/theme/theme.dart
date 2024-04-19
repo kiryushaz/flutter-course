@@ -6,10 +6,9 @@ final coffeeAppTheme = ThemeData(
     fontFamily: 'Roboto',
     primaryColor: CoffeeAppColors.primary,
     elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(CoffeeAppColors.primary),
-            foregroundColor:
-                MaterialStateProperty.all(CoffeeAppColors.secondaryTextColor))),
+        style: ElevatedButton.styleFrom(
+            backgroundColor: CoffeeAppColors.primary,
+            foregroundColor: CoffeeAppColors.secondaryTextColor)),
     colorScheme: ColorScheme.fromSeed(
       seedColor: CoffeeAppColors.primary,
       background: CoffeeAppColors.screenBackground,
