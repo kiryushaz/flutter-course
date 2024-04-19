@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_course/src/theme/app_colors.dart';
 import 'package:flutter_course/src/theme/image_sources.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -120,7 +121,12 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                         child: Center(
                             child: Text(
                                 AppLocalizations.of(context)!.bottomSheetButton,
-                                style: Theme.of(context).textTheme.bodyLarge)),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge
+                                    ?.copyWith(
+                                        color: CoffeeAppColors
+                                            .secondaryTextColor))),
                       ))),
             )
           ],

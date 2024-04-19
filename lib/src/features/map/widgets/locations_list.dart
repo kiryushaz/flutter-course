@@ -29,7 +29,8 @@ class LocationsList extends StatelessWidget {
           final location = context.read<MenuBloc>().state.locations![index];
           return ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-            title: Text(location.address),
+            title: Text(location.address,
+                style: Theme.of(context).textTheme.bodyMedium),
             trailing: ImageSources.rightArrowIcon,
             onTap: () {
               log("Selected location ${location.id}");

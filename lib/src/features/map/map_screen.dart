@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_course/src/features/map/widgets/locations_list.dart';
+import 'package:flutter_course/src/features/map/widgets/point_bottom_sheet.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
 import 'package:flutter_course/src/features/menu/model/location.dart';
 import 'package:flutter_course/src/theme/app_colors.dart';
@@ -63,13 +64,21 @@ class _MapScreenState extends State<MapScreen> {
     final List<Location> locations = context.read<MenuBloc>().state.locations!;
 
     return locations
-        .map((point) => PlacemarkMapObject(
-              mapId: MapObjectId("Point ${point.id}"),
-              point: Point(latitude: point.lat, longitude: point.lng),
+        .map((obj) => PlacemarkMapObject(
+              mapId: MapObjectId("Point ${obj.id}"),
+              point: Point(latitude: obj.lat, longitude: obj.lng),
               opacity: 1,
               icon: PlacemarkIcon.single(PlacemarkIconStyle(
                   image: BitmapDescriptor.fromAssetImage(ImageSources.mapPoint),
                   scale: 2.0)),
+              onTap: (mapObject, point) {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  constraints: const BoxConstraints.tightFor(height: 180),
+                  builder: (context) => PointBottomSheet(index: obj.id),
+                );
+              },
             ))
         .toList();
   }
