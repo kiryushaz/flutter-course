@@ -17,11 +17,14 @@ dependencies:
   flutter_bloc: ^8.1.4
   flutter_localizations:
     sdk: flutter
+  geolocator: ^11.0.0
   http: ^1.2.1
   intl: any
   path: ^1.9.0
   path_provider: ^2.1.2
+  shared_preferences: ^2.2.2
   sqlite3_flutter_libs: ^0.5.20
+  yandex_mapkit: ^4.0.1
 
 dev_dependencies:
   flutter_test:

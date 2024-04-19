@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_course/src/theme/app_colors.dart';
+import 'package:flutter_course/src/features/map/map_screen.dart';
+import 'package:flutter_course/src/theme/image_sources.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
 import 'package:flutter_course/src/features/menu/view/widgets/cart_button.dart';
@@ -31,8 +32,11 @@ class _MenuScreenState extends State<MenuScreen> {
     setState(() {
       final targetContext = GlobalObjectKey(id).currentContext;
       if (targetContext != null && id != _selectedIndex) {
-        Scrollable.ensureVisible(targetContext,
-            duration: const Duration(milliseconds: 500), curve: Curves.ease);
+        Scrollable.ensureVisible(
+          targetContext,
+          duration: const Duration(milliseconds: 500), 
+          curve: Curves.ease
+        );
       }
     });
   }
@@ -95,8 +99,16 @@ class _MenuScreenState extends State<MenuScreen> {
                       children: [
                         ListTile(
                           contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          leading: const Icon(Icons.location_on_outlined, color: CoffeeAppColors.primary),
-                          title: Text(state.locations?[0].address ?? 'null', style: Theme.of(context).textTheme.bodyMedium),
+                          leading: ImageSources.locationIcon,
+                          title: Text(
+                            state.locations?[0].address ?? 'null', 
+                            style: Theme.of(context).textTheme.bodyMedium
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const MapScreen()
+                            ));
+                          },
                         ),
                         SizedBox(
                           height: 52,
@@ -169,7 +181,7 @@ class _MenuScreenState extends State<MenuScreen> {
                           ]
                         );
                       }
-                      return Container();
+                      return const CircularProgressIndicator();
                     },
                   ),
                 )
@@ -178,7 +190,7 @@ class _MenuScreenState extends State<MenuScreen> {
           );
         } 
         else if (state is MenuFailureState) {
-          String exceptionMsg = kDebugMode ? state.exception.toString() : AppLocalizations.of(context)!.msgException;
+          String exceptionMsg = !kReleaseMode ? state.exception.toString() : AppLocalizations.of(context)!.msgException;
           return Scaffold(body: Center(child: Text(exceptionMsg)));
         }
         
