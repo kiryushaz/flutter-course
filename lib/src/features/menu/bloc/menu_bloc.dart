@@ -87,7 +87,7 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
       emit(MenuSuccessState(
           locations: state.locations,
           categories: state.categories,
-          items: items,
+          items: state.items,
           cartItems: state.cartItems));
     } catch (e) {
       emit(MenuFailureState(exception: e));

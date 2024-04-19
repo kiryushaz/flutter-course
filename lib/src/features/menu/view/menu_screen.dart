@@ -70,6 +70,7 @@ class _MenuScreenState extends State<MenuScreen> {
       } else if (state is MenuSuccessState) {
         return Scaffold(
             floatingActionButton: FloatingActionButton.extended(
+                elevation: 0.0,
                 extendedPadding: const EdgeInsets.all(16.0),
                 label: const CartButton(),
                 onPressed: () => showModalBottomSheet(
