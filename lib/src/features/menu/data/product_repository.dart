@@ -1,31 +1,36 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_course/src/features/menu/data/data_sources/product_data_source.dart';
+import 'package:flutter_course/src/features/menu/data/data_sources/savable_product_data_source.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
 import 'package:flutter_course/src/features/menu/model/product.dart';
 
-import 'interface/product_repository.dart';
-
-final dio = Dio(BaseOptions(baseUrl: 'https://coffeeshop.academy.effective.band/api/v1'));
+abstract interface class IProductRepository {
+  Future<List<Product>> loadProducts({required Category category, int page = 0, int limit = 25});
+}
 
 final class ProductRepository implements IProductRepository {
-  final Dio _dio;
+  final IProductsDataSource _networkProductsDataSource;
+  final ISavableProductsDataSource _dbProductsDataSource;
 
-  const ProductRepository({required Dio dio}) : _dio = dio;
+  const ProductRepository({
+    required IProductsDataSource networkProductsDataSource,
+    required ISavableProductsDataSource dbProductsDataSource
+  }) : _networkProductsDataSource = networkProductsDataSource,
+  _dbProductsDataSource = dbProductsDataSource;
 
   @override
   Future<List<Product>> loadProducts({required Category category, int page = 0, int limit = 25}) async {
-    final response = await _dio.get('/products', queryParameters: {
-      'category': category.id,
-      'page': page,
-      'limit': limit
-    });
-
-    if (response.statusCode == 200) {
-      final data = response.data!['data'].map((json) => Product.fromJson(json));
-      return List<Product>.from(data);
-    } else {
-      throw const SocketException('Failed to load products');
+    var data = <Product>[];
+    try {
+      data = await _networkProductsDataSource.fetchProducts(categoryId: category.id, page: page, limit: limit);
+      _dbProductsDataSource.saveProducts(products: data);
+    } on DioException {
+      data = await _dbProductsDataSource.fetchProducts(categoryId: category.id, page: page, limit: limit);
+    } on SocketException {
+      data = await _dbProductsDataSource.fetchProducts(categoryId: category.id, page: page, limit: limit);
     }
+    return data;
   }
 }

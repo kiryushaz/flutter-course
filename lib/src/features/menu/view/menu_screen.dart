@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -63,13 +64,11 @@ class _MenuScreenState extends State<MenuScreen> {
       builder: (context, state) {
         if (state is MenuLoadingCategoriesState) {
           context.read<MenuBloc>().add(const LoadCategoriesEvent());
-          return const Center(child: CircularProgressIndicator());
         }
-        if (state is MenuLoadingProductsState) {
+        else if (state is MenuLoadingProductsState) {
           context.read<MenuBloc>().add(const LoadItemsEvent());
-          return const Center(child: CircularProgressIndicator());
         }
-        if (state is MenuSuccessState) {
+        else if (state is MenuSuccessState) {
           return Scaffold(
             floatingActionButton: FloatingActionButton.extended(
             extendedPadding: const EdgeInsets.all(16.0),
@@ -94,20 +93,20 @@ class _MenuScreenState extends State<MenuScreen> {
                         vertical: 8.0, horizontal: 16.0
                       ),
                       scrollDirection: Axis.horizontal,
-                      itemCount: state.categories!.length,
+                      itemCount: state.categories?.length ?? 0,
                       itemBuilder: (context, index) {
-                      final category = state.categories![index];
-                      return CategoryButton(
-                        text: category.slug,
-                        isActive: category.id == _selectedIndex,
-                        onPressed: () {
-                          scrollTo(category.id);
-                          selectCategory(category.id);
-                        }
-                      );
-                    },
-                    separatorBuilder: (context, index) =>
-                      const SizedBox(width: 8.0),
+                        final category = state.categories![index];
+                        return CategoryButton(
+                          text: category.slug,
+                          isActive: category.id == _selectedIndex,
+                          onPressed: () {
+                            scrollTo(category.id);
+                            selectCategory(category.id);
+                          }
+                        );
+                      },
+                      separatorBuilder: (context, index) =>
+                        const SizedBox(width: 8.0),
                     ),
                   ),
                 ),
@@ -115,7 +114,7 @@ class _MenuScreenState extends State<MenuScreen> {
                   child: ListView.builder(
                     controller: ScrollController(),
                     shrinkWrap: true,
-                    itemCount: state.categories!.length,
+                    itemCount: state.categories?.length ?? 0,
                     itemBuilder: (context, index) {
                       if (state.items != null) {
                         final category = state.categories![index];
@@ -161,7 +160,12 @@ class _MenuScreenState extends State<MenuScreen> {
             )
           );
         } 
-        return Scaffold(body: Center(child: Text(AppLocalizations.of(context)!.msgException)));
+        else if (state is MenuFailureState) {
+          String exceptionMsg = kDebugMode ? state.exception.toString() : AppLocalizations.of(context)!.msgException;
+          return Scaffold(body: Center(child: Text(exceptionMsg)));
+        }
+        
+        return const Center(child: CircularProgressIndicator());
       }
     );
   }

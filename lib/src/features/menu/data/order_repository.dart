@@ -1,22 +1,27 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_course/src/features/menu/data/interface/order_repository.dart';
+import 'dart:io';
 
-final dio = Dio(
-    BaseOptions(baseUrl: 'https://coffeeshop.academy.effective.band/api/v1'));
+import 'package:dio/dio.dart';
+import 'package:flutter_course/src/features/menu/data/data_sources/order_data_source.dart';
+
+abstract interface class IOrderRepository {
+  Future<Map<String, dynamic>> loadOrder({required Map<String, int> orderJson});
+}
 
 final class OrderRepository implements IOrderRepository {
-  final Dio _dio;
+  final IOrderDataSource _orderDataSource;
 
-  const OrderRepository({required Dio dio}) : _dio = dio;
+  const OrderRepository({
+    required IOrderDataSource orderDataSource
+  }) : _orderDataSource = orderDataSource;
 
   @override
-  Future<Map> createOrder({required Map<String, int> orderJson}) async {
-    final response = await _dio.post('/orders', data: {"positions": orderJson, "token": ""});
-
-    if (response.statusCode == 201) {
-      return response.data;
-    } else {
-      throw Exception('Failed to load products');
+  Future<Map<String, dynamic>> loadOrder({required Map<String, int> orderJson}) async {
+    try {
+      return await _orderDataSource.createOrder(orderJson: orderJson);
+    } on DioException {
+      return {};
+    } on SocketException {
+      return {};
     }
   }
 }

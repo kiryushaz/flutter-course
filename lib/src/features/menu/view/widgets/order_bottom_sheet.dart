@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,11 +47,17 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                 itemBuilder: (context, index) {
                   return ListTile(
                       contentPadding: const EdgeInsets.all(10.0),
-                      leading: Image.network(
-                          context.read<MenuBloc>().state.cartItems![index].imageUrl,
-                          width: 55.0,
-                          height: 55.0,
-                          fit: BoxFit.contain),
+                      leading: CachedNetworkImage(
+                        imageUrl: context.read<MenuBloc>().state.cartItems![index].imageUrl,
+                        imageBuilder: (context, imageProvider) => Container(
+                          width: 55,
+                          height: 55,
+                          decoration: BoxDecoration(
+                              image:
+                                  DecorationImage(image: imageProvider, fit: BoxFit.contain)),
+                        ),
+                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                      ),
                       title: Padding(
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Text(context.read<MenuBloc>().state.cartItems![index].name,
@@ -77,7 +86,7 @@ class _OrderBottomSheetState extends State<OrderBottomSheet> {
                           borderRadius: BorderRadius.all(Radius.circular(16)))),
                   onPressed: () {
                     final orderJson = createOrder(context.read<MenuBloc>().state.cartItems!);
-                    debugPrint('$orderJson');
+                    log('$orderJson');
                     context.read<MenuBloc>().add(CreateNewOrderEvent(orderJson));
                     Navigator.of(context).pop();
                     context.read<MenuBloc>().add(const ClearCartEvent());
