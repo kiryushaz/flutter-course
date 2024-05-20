@@ -18,7 +18,8 @@ final class NetworkCategoriesDataSource implements ICategoriesDataSource {
         queryParameters: {'page': page, 'limit': limit});
 
     if (response.statusCode == 200) {
-      final data = response.data!['data'].map((json) => Category.fromJson(json));
+      final data =
+          response.data!['data'].map((json) => Category.fromJson(json));
       return List<Category>.from(data);
     } else {
       throw const SocketException('Failed to load categories');

@@ -6,7 +6,8 @@ class CategoryButton extends StatefulWidget {
   final bool isActive;
   final Function()? onPressed;
 
-  const CategoryButton({super.key, required this.text, required this.isActive, this.onPressed});
+  const CategoryButton(
+      {super.key, required this.text, required this.isActive, this.onPressed});
 
   @override
   _CategoryButtonState createState() => _CategoryButtonState();

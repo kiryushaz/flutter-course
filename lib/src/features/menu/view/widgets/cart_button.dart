@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
+import 'package:flutter_course/src/theme/image_sources.dart';
 
 class CartButton extends StatelessWidget {
   const CartButton({super.key});
@@ -15,7 +16,7 @@ class CartButton extends StatelessWidget {
             .reduce((value, element) => value + element);
     return Row(
       children: [
-        const Icon(Icons.shopping_basket_outlined),
+        ImageSources.cartIcon,
         const SizedBox(width: 10),
         Text('$totalCost RUB')
       ],
