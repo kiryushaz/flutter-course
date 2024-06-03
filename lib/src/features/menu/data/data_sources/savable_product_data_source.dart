@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:flutter_course/src/database.dart' as db;
+import 'package:flutter_course/src/common/database/database.dart' as db;
 import 'package:flutter_course/src/features/menu/data/data_sources/product_data_source.dart';
 import 'package:flutter_course/src/features/menu/model/category.dart';
 import 'package:flutter_course/src/features/menu/model/price.dart';
