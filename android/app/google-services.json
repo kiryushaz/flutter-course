@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "354401716290",
+    "project_id": "coffee-shop-app-d909c",
+    "storage_bucket": "coffee-shop-app-d909c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:354401716290:android:54aed4dfc47e550dee45db",
+        "android_client_info": {
+          "package_name": "com.example.flutter_course"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVcMw7Nb7DxVWw6Q90vELxDpYavnFUU6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

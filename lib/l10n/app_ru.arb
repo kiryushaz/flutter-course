@@ -1,0 +1,10 @@
+{
+    "@@locale": "ru",
+    "msgException": "Что-то пошло не так",
+    "bottomSheetTitle": "Ваш заказ",
+    "bottomSheetButton": "Оформить заказ",
+    "snackBarSuccessMsg": "Заказ создан",
+    "snackBarFailureMsg": "Возникла ошибка при заказе",
+    "locationsListTitle": "Наши кофейни",
+    "selectLocation": "Выбрать"
+}
