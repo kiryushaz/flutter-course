@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_course/src/database.dart';
+import 'package:flutter_course/src/common/database/database.dart';
 import 'package:flutter_course/src/features/menu/bloc/menu_bloc.dart';
 import 'package:flutter_course/src/features/menu/data/category_repository.dart';
 import 'package:flutter_course/src/features/menu/data/data_sources/category_data_source.dart';
